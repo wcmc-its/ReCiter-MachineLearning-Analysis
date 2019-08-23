@@ -49,15 +49,16 @@ print("Count Items from count_articles list:", len(count_articles))
 print(len(no_article_person_list))
 
 
+outputPath = '/Users/zhuzm1996/Desktop/ReCiter/'
 
 #code for personArticle table
-#open a csv file
-f = open('personArticle_mysql.csv','w')
+#open a csv file in the directory you preferred
+f = open(outputPath + 'personArticle_mysql.csv','w')
 #write column names into file
 f.write("personIdentifier," + "pmid," + "totalArticleScoreStandardized," + "totalArticleScoreNonStandardized," 
         + "userAssertion," + "publicationDateStandardized," + "publicationTypeCanonical," + "publicationAbstract,"
         + "scopusDocID," + "journalTitleVerbose," + "articleTitle," + "feedbackScoreAccepted," + "feedbackScoreRejected," + "feedbackScoreNull," 
-        + "articleAuthorName_firstName," + "articleAuthorName_lastName," + "institutionalAuthorName_firstName," + "institutionalAuthorName_middleName," + "institutionalAuthorName_lastName,"
+        + "articleAuthorNameFirstName," + "articleAuthorNameLastName," + "institutionalAuthorNameFirstName," + "institutionalAuthorNameMiddleName," + "institutionalAuthorNameLastName,"
         + "nameMatchFirstScore," + "nameMatchFirstType," + "nameMatchMiddleScore," + "nameMatchMiddleType," + "nameMatchLastScore," + "nameMatchLastType," + "nameMatchModifierScore," + "nameScoreTotal,"
         + "emailMatch," + "emailMatchScore," + "journalSubfieldScienceMetrixLabel," + "journalSubfieldScienceMetrixID," + "journalSubfieldDepartment," + "journalSubfieldScore,"
         + "relationshipEvidenceTotalScore," + "relationshipMinimumTotalScore," + "relationshipNonMatchCount," + "relationshipNonMatchScore,"
@@ -311,7 +312,7 @@ f.close()
 
 #### The logic of all parts below is similar to the first part, please refer to the first part for explaination ####
 #code for personArticleGrant table
-f = open('/Users/zhuzm1996/Desktop/ReCiter/personArticleGrant.csv','w')
+f = open(outputPath + 'personArticleGrant.csv','w')
 f.write("personIdentifier," + "pmid," + "articleGrant," + "grantMatchScore," + "institutionGrant" + "\n")
 
 count = 0
@@ -337,7 +338,7 @@ f.close()
 
 
 #code for personArticleScopusNonTargetAuthorAffiliation table
-f = open('/Users/zhuzm1996/Desktop/ReCiter/personArticleScopusNonTargetAuthorAffiliation.csv','w')
+f = open(outputPath + 'personArticleScopusNonTargetAuthorAffiliation.csv','w')
 f.write("personIdentifier," + "pmid," + "nonTargetAuthorInstitutionLabel," + "nonTargetAuthorInstitutionID," + "nonTargetAuthorInstitutionCount" + "\n")
 
 count = 0
@@ -365,7 +366,7 @@ f.close()
 
 
 #code for personArticleScopusTargetAuthorAffiliation table
-f = open('/Users/zhuzm1996/Desktop/ReCiter/personArticleScopusTargetAuthorAffiliation.csv','w')
+f = open(outputPath + 'personArticleScopusTargetAuthorAffiliation.csv','w')
 f.write("personIdentifier," + "pmid," + "targetAuthorInstitutionalAffiliationSource," + "scopusTargetAuthorInstitutionalAffiliationIdentity," + "targetAuthorInstitutionalAffiliationArticleScopusLabel,"
         + "targetAuthorInstitutionalAffiliationArticleScopusAffiliationId," + "targetAuthorInstitutionalAffiliationMatchType," + "targetAuthorInstitutionalAffiliationMatchTypeScore" + "\n")
 
@@ -402,7 +403,7 @@ f.close()
 
 
 #code for personArticleDepartment table
-f = open('/Users/zhuzm1996/Desktop/ReCiter/personArticleDepartment.csv','w')
+f = open(outputPath + 'personArticleDepartment.csv','w')
 f.write("personIdentifier," + "pmid," + "identityOrganizationalUnit," + "articleAffiliation," 
         + "organizationalUnitType," + "organizationalUnitMatchingScore," + "organizationalUnitModifier," + "organizationalUnitModifierScore" + "\n")
 
@@ -438,9 +439,9 @@ f.close()
 
 
 #code for personArticleRelationship table
-f = open('/Users/zhuzm1996/Desktop/ReCiter/personArticleRelationship.csv','w')
-f.write("personIdentifier," + "pmid," + "relationshipNameArticle_firstName," + "relationshipNameArticle_lastName," 
-        + "relationshipNameIdentity_firstName," + "relationshipNameIdentity_lastName," + "relationshipType," + "relationshipMatchType,"
+f = open(outputPath + 'personArticleRelationship.csv','w')
+f.write("personIdentifier," + "pmid," + "relationshipNameArticleFirstName," + "relationshipNameArticleLastName," 
+        + "relationshipNameIdentityFirstName," + "relationshipNameIdentityLastName," + "relationshipType," + "relationshipMatchType,"
         + "relationshipMatchingScore," + "relationshipVerboseMatchModifierScore," + "relationshipMatchModifierMentor,"
         + "relationshipMatchModifierMentorSeniorAuthor," + "relationshipMatchModifierManager," + "relationshipMatchModifierManagerSeniorAuthor" + "\n")
 
@@ -479,7 +480,7 @@ f.close()
 
 
 #code for person table
-f = open('/Users/zhuzm1996/Desktop/ReCiter/person.csv','w')
+f = open(outputPath + 'person.csv','w')
 f.write("personIdentifier," + "dateAdded," + "dateUpdated," + "precision," + "recall," + "countSuggestedArticles," + "overallAccuracy," + "mode" + "\n")
 
 count = 0
@@ -512,7 +513,7 @@ for i in range(len(items)):
         count_authors_dict[str(items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['pmid'])] =  len(items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['reCiterArticleAuthorFeatures'])
 print(len(count_authors_dict))
 
-f = open('/Users/zhuzm1996/Desktop/ReCiter/personArticleAuthor.csv','w')
+f = open(outputPath + 'personArticleAuthor.csv','w')
 f.write("personIdentifier," + "pmid," + "authorFirstName," + "authorLastName," + "targetAuthor," + "rank" + "\n")
 
 count = 0
