@@ -139,3 +139,12 @@ Here we will learn how to perform analyses on data retrieved from ReCiter so tha
 1. If you haven’t done so already, create a flat file described in the above section, “Converting ReCiter data from JSON to CSV using Python.” This steps prepares data that can be used by the Jupyter Notebook.
 1. Open Anaconda.
 1. Choose Launch Jupyter Notebooks.
+1. If you run the code snippets, you can output any of the following:
+   1. Density plot of scores broken down by userAssertion value
+   1. Correlation plot of features
+   1. Optimized weights for features
+   
+![alt text](https://github.com/wcmc-its/ReCiter-MachineLearning-Analysis/blob/master/BarChartDensityDistribution.png)  
+
+![alt text](https://github.com/wcmc-its/ReCiter-MachineLearning-Analysis/blob/master/DensityBarGraphByUserAssertion.png) 
+
