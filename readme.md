@@ -143,8 +143,10 @@ Here we will learn how to perform analyses on data retrieved from ReCiter so tha
    1. Density plot of scores broken down by userAssertion value
    1. Correlation plot of features
    1. Optimized weights for features
-   
+1. Here are some sample outputs...
+
 ![alt text](https://github.com/wcmc-its/ReCiter-MachineLearning-Analysis/blob/master/BarChartDensityDistribution.png)  
 
 ![alt text](https://github.com/wcmc-its/ReCiter-MachineLearning-Analysis/blob/master/DensityBarGraphByUserAssertion.png) 
 
+![alt text](https://github.com/wcmc-its/ReCiter-MachineLearning-Analysis/blob/master/correlationPlotFeatures.png) 
