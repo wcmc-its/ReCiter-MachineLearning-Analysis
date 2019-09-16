@@ -77,6 +77,7 @@ Here we’re going to use a bash script to retrieve data from ReCiter’s featur
 1. Update the API key.
 1. Update the URL request as you wish. You will want to change anything including: the domain, fields returned, totalStandardizedArticleScore threshold, etc.
 1. Save the file.
+1. Run `. /reciterRetrieval.sh` from the command line.
 1. The script will output a series of JSON files.
 
 
