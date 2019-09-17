@@ -5,8 +5,22 @@ import csv
 from init import pymysql
 import MySQLdb
 
+import boto3
+import os
+
+def downloadDirectoryFroms3(bucketName,remoteDirectoryName):
+    s3_resource = boto3.resource('s3')
+    bucket = s3_resource.Bucket(bucketName) 
+    for object in bucket.objects.filter(Prefix = remoteDirectoryName):
+        print(object)
+        if not os.path.exists(os.path.dirname(object.key)):
+            os.makedirs(os.path.dirname(object.key))
+        bucket.download_file(object.key,object.key)
+
 #get all filename(i.e. personIdentifier) in the folder
-originalDataPath = '/Users/szd2013/Desktop/s3/' #need to modify based on your local directory
+originalDataPath = '/usr/src/app/AnalysisOutput/' #need to modify based on your local directory
+
+downloadDirectoryFroms3('reciter-dynamodb', 'AnalysisOutput')
 
 person_list = []
 for filename in os.listdir(originalDataPath):
@@ -27,7 +41,7 @@ for item in person_list:
 print(len(items))
 
 
-outputPath = '/Users/szd2013/Desktop/ReCiter/'
+outputPath = '/usr/src/app/ReCiter/'
 
 #code for personArticle_s3 table
 #open a csv file
@@ -528,9 +542,8 @@ mydb = MySQLdb.connect(host='localhost',
     db='reciter_report')
 
 cursor = mydb.cursor()
-cursor.execute("TRUNCATE TABLE person")
 #Import person table
-f = open('/Users/szd2013/Desktop/ReCiter/person_s3.csv','r')
+f = open(outputPath + 'person_s3.csv','r')
 csv_data = csv.reader(f)
 for row in csv_data:
     try:
@@ -545,9 +558,8 @@ cursor.close()
 f.close()
 
 #Import personArticleAuthor_s3 table
-f = open('/Users/szd2013/Desktop/ReCiter/personArticleAuthor_s3.csv','r')
+f = open(outputPath + 'personArticleAuthor_s3.csv','r')
 cursor = mydb.cursor()
-cursor.execute("TRUNCATE TABLE personArticleAuthor")
 csv_data = csv.reader(f)
 for row in csv_data:
     try:
@@ -562,9 +574,8 @@ cursor.close()
 f.close()
 
 #Import personArticleRelationship_s3 table
-f = open('/Users/szd2013/Desktop/ReCiter/personArticleRelationship_s3.csv','r')
+f = open(outputPath + 'personArticleRelationship_s3.csv','r')
 cursor = mydb.cursor()
-cursor.execute("TRUNCATE TABLE personArticleRelationship")
 csv_data = csv.reader(f)
 for row in csv_data:
     try:
@@ -580,9 +591,8 @@ f.close()
 
 
 #Import personArticleDepartment_s3 table
-f = open('/Users/szd2013/Desktop/ReCiter/personArticleDepartment_s3.csv','r')
+f = open(outputPath + 'personArticleDepartment_s3.csv','r')
 cursor = mydb.cursor()
-cursor.execute("TRUNCATE TABLE personArticleDepartment")
 csv_data = csv.reader(f)
 for row in csv_data:
     try:
@@ -597,9 +607,8 @@ cursor.close()
 f.close()
 
 #Import personArticleScopusTargetAuthorAffiliation_s3 table
-f = open('/Users/szd2013/Desktop/ReCiter/personArticleScopusTargetAuthorAffiliation_s3.csv','r')
+f = open(outputPath + 'personArticleScopusTargetAuthorAffiliation_s3.csv','r')
 cursor = mydb.cursor()
-cursor.execute("TRUNCATE TABLE personArticleScopusTargetAuthorAffiliation")
 csv_data = csv.reader(f)
 for row in csv_data:
     try:
@@ -614,9 +623,8 @@ cursor.close()
 f.close()
 
 #Import personArticleScopusNonTargetAuthorAffiliation_s3 table
-f = open('/Users/szd2013/Desktop/ReCiter/personArticleScopusNonTargetAuthorAffiliation_s3.csv','r')
+f = open(outputPath + 'personArticleScopusNonTargetAuthorAffiliation_s3.csv','r')
 cursor = mydb.cursor()
-cursor.execute("TRUNCATE TABLE personArticleScopusNonTargetAuthorAffiliation")
 csv_data = csv.reader(f)
 for row in csv_data:
     try:
@@ -631,9 +639,8 @@ cursor.close()
 f.close()
 
 #Import personArticleGrant_s3 table
-f = open('/Users/szd2013/Desktop/ReCiter/personArticleGrant_s3.csv','r')
+f = open(outputPath + 'personArticleGrant_s3.csv','r')
 cursor = mydb.cursor()
-cursor.execute("TRUNCATE TABLE personArticleGrant")
 csv_data = csv.reader(f)
 for row in csv_data:
     try:
@@ -648,9 +655,8 @@ cursor.close()
 f.close()
 
 #Import personArticle_s3_mysql table
-f = open('/Users/szd2013/Desktop/ReCiter/personArticle_s3_mysql.csv','r')
+f = open(outputPath + 'personArticle_s3_mysql.csv','r')
 cursor = mydb.cursor()
-cursor.execute("TRUNCATE TABLE personArticle")
 csv_data = csv.reader(f, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True)
 for row in csv_data:
     #cursor.execute('set profiling = 1')

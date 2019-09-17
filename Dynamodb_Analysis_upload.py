@@ -2,12 +2,16 @@ import boto3
 from boto3.dynamodb.conditions import Key, Attr
 import time
 import json
+import csv
 import decimal
+from init import pymysql
+import MySQLdb
 
 dynamodb = boto3.resource('dynamodb')
 
 def scan_table(table_name): #runtime: about 15min
     #record time for scan the entire table
+    print(dynamodb)
     start = time.time()
     table = dynamodb.Table(table_name)
 
@@ -27,7 +31,7 @@ def scan_table(table_name): #runtime: about 15min
                 )
             items += response['Items']
         else:           
-             break
+            break
     print('execution time:', time.time() - start)
     
     return items
@@ -49,7 +53,7 @@ print("Count Items from count_articles list:", len(count_articles))
 print(len(no_article_person_list))
 
 
-outputPath = '/Users/zhuzm1996/Desktop/ReCiter/'
+outputPath = '/usr/src/app/ReCiter/'
 
 #code for personArticle table
 #open a csv file in the directory you preferred
@@ -69,10 +73,10 @@ f.write("personIdentifier," + "pmid," + "totalArticleScoreStandardized," + "tota
         + "totalArticleScoreWithoutClustering," + "clusterScoreAverage," + "clusterReliabilityScore," + "clusterScoreModificationOfTotalScore," 
         + "datePublicationAddedToEntrez," + "doi," + "issn," + "issue," + "journalTitleISOabbreviation," + "pages," + "timesCited," + "volume"
         + "\n")
-
 #use count to record the number of person we have finished feature extraction
 count = 0
 #extract all required nested features 
+
 for i in range(len(items)):
     article_temp = count_articles[i][1]
     for j in range(article_temp):
@@ -85,12 +89,6 @@ for i in range(len(items)):
         publicationDateStandardized = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['publicationDateStandardized']
         publicationTypeCanonical = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['publicationType']['publicationTypeCanonical']
         # example1: when you get key error, check whether the key exist in dynamodb or not
-        if 'publicationAbstract' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]:
-            publicationAbstract = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['publicationAbstract']
-            #if the value is a string, it may contain ", we need to replace it with ""
-            publicationAbstract = publicationAbstract.replace('"', '""') 
-        else:
-            publicationAbstract = ""
         if 'scopusDocID' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]:
             scopusDocID = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['scopusDocID']
         else:
@@ -107,15 +105,15 @@ for i in range(len(items)):
             if 'feedbackScoreAccepted' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['acceptedRejectedEvidence']:
                 feedbackScoreAccepted = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['acceptedRejectedEvidence']['feedbackScoreAccepted']
             else: 
-                feedbackScoreAccepted = ""
+                feedbackScoreAccepted = 0
             if 'feedbackScoreRejected' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['acceptedRejectedEvidence']:
                 feedbackScoreRejected = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['acceptedRejectedEvidence']['feedbackScoreRejected']
             else: 
-                feedbackScoreRejected = ""
+                feedbackScoreRejected = 0
             if 'feedbackScoreNull' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['acceptedRejectedEvidence']:
                 feedbackScoreNull = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['acceptedRejectedEvidence']['feedbackScoreNull']
             else: 
-                feedbackScoreNull = ""
+                feedbackScoreNull = 0
         else:
             feedbackScoreAccepted, feedbackScoreRejected, feedbackScoreNull = "", "", ""
         
@@ -152,7 +150,7 @@ for i in range(len(items)):
                 emailMatch = ""
             emailMatchScore = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['emailEvidence']['emailMatchScore']
         else:
-            emailMatch, emailMatchScore = "", ""
+            emailMatch, emailMatchScore = "", 0
         
         if 'journalCategoryEvidence' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']:
             journalSubfieldScienceMetrixLabel = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['journalCategoryEvidence']['journalSubfieldScienceMetrixLabel']
@@ -162,7 +160,7 @@ for i in range(len(items)):
             journalSubfieldDepartment = journalSubfieldDepartment.replace('"', '""')
             journalSubfieldScore = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['journalCategoryEvidence']['journalSubfieldScore']
         else:
-            journalSubfieldScienceMetrixLabel, journalSubfieldScienceMetrixID, journalSubfieldDepartment, journalSubfieldScore = "", "", "", ""
+            journalSubfieldScienceMetrixLabel, journalSubfieldScienceMetrixID, journalSubfieldDepartment, journalSubfieldScore = "", "", "", 0
         
         if 'relationshipEvidence' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']:
             relationshipEvidenceTotalScore = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['relationshipEvidence']['relationshipEvidenceTotalScore']
@@ -171,15 +169,15 @@ for i in range(len(items)):
                 relationshipNonMatchCount = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['relationshipEvidence']['relationshipNegativeMatch']['relationshipNonMatchCount']
                 relationshipNonMatchScore = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['relationshipEvidence']['relationshipNegativeMatch']['relationshipNonMatchScore']
             else:
-                relationshipMinimumTotalScore, relationshipNonMatchCount, relationshipNonMatchScore = "", "", ""
+                relationshipMinimumTotalScore, relationshipNonMatchCount, relationshipNonMatchScore = 0, 0, 0
         else:
-            relationshipEvidenceTotalScore, relationshipMinimumTotalScore, relationshipNonMatchCount, relationshipNonMatchScore = "", "", "", ""
+            relationshipEvidenceTotalScore, relationshipMinimumTotalScore, relationshipNonMatchCount, relationshipNonMatchScore = 0, 0, 0, 0
         
         if 'educationYearEvidence' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']:
             if 'articleYear' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']:
                 articleYear = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']['articleYear']
             else:
-                articleYear = ""
+                articleYear = 0
             if 'identityBachelorYear' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']:
                 identityBachelorYear = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']['identityBachelorYear']
             else:
@@ -187,11 +185,11 @@ for i in range(len(items)):
             if 'discrepancyDegreeYearBachelor' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']:
                 discrepancyDegreeYearBachelor = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']['discrepancyDegreeYearBachelor']
             else:
-                discrepancyDegreeYearBachelor = ""
+                discrepancyDegreeYearBachelor = 0
             if 'discrepancyDegreeYearBachelorScore' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']:
                 discrepancyDegreeYearBachelorScore = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']['discrepancyDegreeYearBachelorScore']
             else:
-                discrepancyDegreeYearBachelorScore = ""
+                discrepancyDegreeYearBachelorScore = 0
             if 'identityDoctoralYear' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']:
                 identityDoctoralYear = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']['identityDoctoralYear']
             else:
@@ -199,45 +197,45 @@ for i in range(len(items)):
             if 'discrepancyDegreeYearDoctoral' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']:
                 discrepancyDegreeYearDoctoral = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']['discrepancyDegreeYearDoctoral']
             else:
-                discrepancyDegreeYearDoctoral = ""
+                discrepancyDegreeYearDoctoral = 0
             if 'discrepancyDegreeYearDoctoralScore' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']:
                 discrepancyDegreeYearDoctoralScore = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']['discrepancyDegreeYearDoctoralScore']
             else:
-                discrepancyDegreeYearDoctoralScore = ""
+                discrepancyDegreeYearDoctoralScore = 0
         else:
-            articleYear, identityBachelorYear, discrepancyDegreeYearBachelor, discrepancyDegreeYearBachelorScore, identityDoctoralYear, discrepancyDegreeYearDoctoral, discrepancyDegreeYearDoctoralScore = "", "", "", "", "", "", ""
+            articleYear, identityBachelorYear, discrepancyDegreeYearBachelor, discrepancyDegreeYearBachelorScore, identityDoctoralYear, discrepancyDegreeYearDoctoral, discrepancyDegreeYearDoctoralScore = 0, "", 0, 0, "", 0, 0
         
         if 'genderEvidence' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']:
             genderScoreArticle = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['genderEvidence']['genderScoreArticle']
             genderScoreIdentity = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['genderEvidence']['genderScoreIdentity']
             genderScoreIdentityArticleDiscrepancy = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['genderEvidence']['genderScoreIdentityArticleDiscrepancy']
         else:
-            genderScoreArticle, genderScoreIdentity, genderScoreIdentityArticleDiscrepancy = "", "", ""
+            genderScoreArticle, genderScoreIdentity, genderScoreIdentityArticleDiscrepancy = 0, 0, 0
         
         if 'personTypeEvidence' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']:
             personType = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['personTypeEvidence']['personType']
             personTypeScore = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['personTypeEvidence']['personTypeScore']
         else:
-            personType, personTypeScore = "", ""
+            personType, personTypeScore = "", 0
         
         if 'articleCountEvidence' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']:
             countArticlesRetrieved = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['articleCountEvidence']['countArticlesRetrieved']
             articleCountScore = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['articleCountEvidence']['articleCountScore']
         else:
-            countArticlesRetrieved, articleCountScore = "", ""
+            countArticlesRetrieved, articleCountScore = 0, 0
         
         if 'pubmedTargetAuthorAffiliation' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']:
             targetAuthorInstitutionalAffiliationArticlePubmedLabel = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['pubmedTargetAuthorAffiliation']['targetAuthorInstitutionalAffiliationArticlePubmedLabel']
             targetAuthorInstitutionalAffiliationArticlePubmedLabel = targetAuthorInstitutionalAffiliationArticlePubmedLabel.replace('"', '""')
             pubmedTargetAuthorInstitutionalAffiliationMatchTypeScore = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['pubmedTargetAuthorAffiliation']['targetAuthorInstitutionalAffiliationMatchTypeScore']
         else:
-            targetAuthorInstitutionalAffiliationArticlePubmedLabel, pubmedTargetAuthorInstitutionalAffiliationMatchTypeScore = "", ""
+            targetAuthorInstitutionalAffiliationArticlePubmedLabel, pubmedTargetAuthorInstitutionalAffiliationMatchTypeScore = "", 0
         
         if 'scopusNonTargetAuthorAffiliation' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']:
             scopusNonTargetAuthorInstitutionalAffiliationSource = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusNonTargetAuthorAffiliation']['nonTargetAuthorInstitutionalAffiliationSource']
             scopusNonTargetAuthorInstitutionalAffiliationScore = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusNonTargetAuthorAffiliation']['nonTargetAuthorInstitutionalAffiliationScore']
         else:
-            scopusNonTargetAuthorInstitutionalAffiliationSource, scopusNonTargetAuthorInstitutionalAffiliationScore = "", ""
+            scopusNonTargetAuthorInstitutionalAffiliationSource, scopusNonTargetAuthorInstitutionalAffiliationScore = "", 0
 
         if 'averageClusteringEvidence' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']:
             totalArticleScoreWithoutClustering = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['averageClusteringEvidence']['totalArticleScoreWithoutClustering']
@@ -278,7 +276,7 @@ for i in range(len(items)):
         if 'timesCited' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]:
             timesCited = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['timesCited']
         else: 
-            timesCited = ""
+            timesCited = 0
         if 'volume' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]:
             volume = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['volume']
         else:
@@ -286,29 +284,28 @@ for i in range(len(items)):
         
         #write all extracted features into csv file
         #some string value may contain a comma, in this case, we need to double quote the output value, for example, '"' + str(journalSubfieldScienceMetrixLabel) + '"'
-        f.write(str(personIdentifier) + "," + str(pmid) + "," + str(totalArticleScoreStandardized) + "," 
-                + str(totalArticleScoreNonStandardized) + "," + str(userAssertion) + "," 
-                + str(publicationDateStandardized) + "," + str(publicationTypeCanonical) + "," + '"' + str(publicationAbstract) + '"' + ","
-                + str(scopusDocID) + ","  + '"' + str(journalTitleVerbose) + '"' + "," + '"' + str(articleTitle) + '"' + "," + str(feedbackScoreAccepted) + "," + str(feedbackScoreRejected) + "," + str(feedbackScoreNull) + "," 
-                + str(articleAuthorName_firstName) + "," + str(articleAuthorName_lastName) + "," + str(institutionalAuthorName_firstName) + "," + str(institutionalAuthorName_middleName) + "," + '"' + str(institutionalAuthorName_lastName) + '"' + ","
-                + str(nameMatchFirstScore) + "," + str(nameMatchFirstType) + "," + str(nameMatchMiddleScore) + "," + str(nameMatchMiddleType) + ","
-                + str(nameMatchLastScore) + "," + str(nameMatchLastType) + "," + str(nameMatchModifierScore) + "," + str(nameScoreTotal) + ","
-                + str(emailMatch) + "," + str(emailMatchScore) + "," 
-                + '"' + str(journalSubfieldScienceMetrixLabel) + '"' + "," + str(journalSubfieldScienceMetrixID) + "," + '"' + str(journalSubfieldDepartment) + '"' + "," + str(journalSubfieldScore) + "," 
-                + str(relationshipEvidenceTotalScore) + "," + str(relationshipMinimumTotalScore) + "," + str(relationshipNonMatchCount) + "," + str(relationshipNonMatchScore) + ","
-                + str(articleYear) + "," + str(identityBachelorYear) + "," + str(discrepancyDegreeYearBachelor) + "," + str(discrepancyDegreeYearBachelorScore) + ","
-                + str(identityDoctoralYear) + "," + str(discrepancyDegreeYearDoctoral) + "," + str(discrepancyDegreeYearDoctoralScore) + "," 
-                + str(genderScoreArticle) + "," + str(genderScoreIdentity) + "," + str(genderScoreIdentityArticleDiscrepancy) + "," 
-                + str(personType) + "," + str(personTypeScore) + ","
-                + str(countArticlesRetrieved) + "," + str(articleCountScore) + ","
-                + '"' + str(targetAuthorInstitutionalAffiliationArticlePubmedLabel) + '"' + "," + str(pubmedTargetAuthorInstitutionalAffiliationMatchTypeScore) + "," + str(scopusNonTargetAuthorInstitutionalAffiliationSource) + "," + str(scopusNonTargetAuthorInstitutionalAffiliationScore) + ","
-                + str(totalArticleScoreWithoutClustering) + "," + str(clusterScoreAverage) + "," + str(clusterReliabilityScore) + "," + str(clusterScoreModificationOfTotalScore) + ","
-                + str(datePublicationAddedToEntrez) + "," + str(doi) + "," + str(issn) + "," + '"' + str(issue) + '"' + "," + '"' + str(journalTitleISOabbreviation) + '"'  + "," + '"' + str(pages) + '"' + "," + str(timesCited) + "," + '"' + str(volume) + '"'
+        f.write('"' + str(personIdentifier) + '"' + "," + '"' + str(pmid) + '"' + "," + '"' + str(totalArticleScoreStandardized) + '"' + "," 
+                + '"' + str(totalArticleScoreNonStandardized) + '"' + "," + '"' + str(userAssertion) + '"' + "," 
+                + '"' + str(publicationDateStandardized) + '"' + "," + '"' + str(publicationTypeCanonical) + '"' + ","
+                + '"' + str(scopusDocID) + '"' + ","  + '"' + str(journalTitleVerbose) + '"' + "," + '"' + str(articleTitle) + '"' + "," + '"' + str(feedbackScoreAccepted) + '"' + "," + '"' + str(feedbackScoreRejected) + '"' + "," + '"' + str(feedbackScoreNull) + '"' + "," 
+                + '"' + str(articleAuthorName_firstName) + '"' + "," + '"' + str(articleAuthorName_lastName) + '"' + "," + '"' + str(institutionalAuthorName_firstName) + '"' + "," + '"' + str(institutionalAuthorName_middleName) + '"' + "," + '"' + str(institutionalAuthorName_lastName) + '"' + ","
+                + '"' + str(nameMatchFirstScore) + '"' + "," + '"' + str(nameMatchFirstType) + '"' + "," + '"' + str(nameMatchMiddleScore) + '"' + "," + '"' + str(nameMatchMiddleType) + '"' + ","
+                + '"' + str(nameMatchLastScore) + '"' + "," + '"' + str(nameMatchLastType) + '"' + "," + '"' + str(nameMatchModifierScore) + '"' + "," + '"' + str(nameScoreTotal) + '"' + ","
+                + '"' + str(emailMatch) + '"' + "," + '"' + str(emailMatchScore) + '"' + "," 
+                + '"' + str(journalSubfieldScienceMetrixLabel) + '"' + "," + '"' + str(journalSubfieldScienceMetrixID) + '"' + "," + '"' + str(journalSubfieldDepartment) + '"' + "," + '"' + str(journalSubfieldScore) + '"' + "," 
+                + '"' + str(relationshipEvidenceTotalScore) + '"' + "," + '"' + str(relationshipMinimumTotalScore) + '"' + "," + '"' + str(relationshipNonMatchCount) + '"' + "," + '"' + str(relationshipNonMatchScore) + '"' + ","
+                + '"' + str(articleYear) + '"' + "," + '"' + str(identityBachelorYear) + '"' + "," + '"' + str(discrepancyDegreeYearBachelor) + '"' + "," + '"' + str(discrepancyDegreeYearBachelorScore) + '"' + ","
+                + '"' + str(identityDoctoralYear) + '"' + "," + '"' + str(discrepancyDegreeYearDoctoral) + '"' + "," + '"' + str(discrepancyDegreeYearDoctoralScore) + '"' + "," 
+                + '"' + str(genderScoreArticle) + '"' + "," + '"' + str(genderScoreIdentity) + '"' + "," + '"' + str(genderScoreIdentityArticleDiscrepancy) + '"' + "," 
+                + '"' + str(personType) + '"' + "," + '"' + str(personTypeScore) + '"' + ","
+                + '"' + str(countArticlesRetrieved) + '"' + "," + '"' + str(articleCountScore) + '"' + ","
+                + '"' + str(targetAuthorInstitutionalAffiliationArticlePubmedLabel) + '"' + "," + '"' + str(pubmedTargetAuthorInstitutionalAffiliationMatchTypeScore) + '"' + "," + '"' + str(scopusNonTargetAuthorInstitutionalAffiliationSource) + '"' + "," + '"' + str(scopusNonTargetAuthorInstitutionalAffiliationScore) + '"' + ","
+                + '"' + str(totalArticleScoreWithoutClustering) + '"' + "," + '"' + str(clusterScoreAverage) + '"' + "," + '"' + str(clusterReliabilityScore) + '"' + "," + '"' + str(clusterScoreModificationOfTotalScore) + '"' + ","
+                + '"' + str(datePublicationAddedToEntrez) + '"' + "," + '"' + str(doi) + '"' + "," + '"' + str(issn) + '"' + "," + '"' + str(issue) + '"' + "," + '"' + str(journalTitleISOabbreviation) + '"'  + "," + '"' + str(pages) + '"' + "," + '"' + str(timesCited) + '"' + "," + '"' + str(volume) + '"'
                 + "\n")
     count += 1
     print("here:", count)
 f.close()
-
 
 #### The logic of all parts below is similar to the first part, please refer to the first part for explaination ####
 #code for personArticleGrant table
@@ -537,4 +534,168 @@ for i in range(len(items)):
             f.write(str(personIdentifier) + "," + str(pmid) + "," + str(firstName) + "," + str(lastName) + "," + str(targetAuthor) + "," + str(rank) + "\n")
     count += 1
     print("here:", count)
+f.close()
+
+mydb = MySQLdb.connect(host='localhost',
+    user='root',
+    passwd='vivotest',
+    db='reciter_report')
+
+cursor = mydb.cursor()
+cursor.execute("TRUNCATE TABLE person")
+#Import person table
+f = open(outputPath + 'person.csv','r')
+csv_data = csv.reader(f)
+#Skip column headers
+next(csv_data)
+for row in csv_data:
+    try:
+        cursor.execute("INSERT INTO person(personIdentifier, dateAdded, dateUpdated, `precision`, recall, countSuggestedArticles, overallAccuracy, mode) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)", 
+        row)
+    except:
+        print(cursor._last_executed)
+        raise
+#close the connection to the database.
+mydb.commit()
+cursor.close()
+f.close()
+
+#Import personArticleAuthor_s3 table
+f = open(outputPath + 'personArticleAuthor.csv','r')
+cursor = mydb.cursor()
+cursor.execute("TRUNCATE TABLE personArticleAuthor")
+csv_data = csv.reader(f)
+#Skip column headers
+next(csv_data)
+for row in csv_data:
+    try:
+        cursor.execute("INSERT INTO personArticleAuthor(personIdentifier, pmid, authorFirstName, authorLastName, targetAuthor, rank) VALUES(%s, %s, %s, %s, %s, %s)", 
+        row)
+    except:
+        print(cursor._last_executed)
+        raise
+#close the connection to the database.
+mydb.commit()
+cursor.close()
+f.close()
+
+#Import personArticleRelationship_s3 table
+f = open(outputPath + 'personArticleRelationship.csv','r')
+cursor = mydb.cursor()
+cursor.execute("TRUNCATE TABLE personArticleRelationship")
+csv_data = csv.reader(f)
+#Skip column headers
+next(csv_data)
+for row in csv_data:
+    try:
+        cursor.execute("INSERT INTO personArticleRelationship(personIdentifier, pmid, relationshipNameArticleFirstName, relationshipNameArticleLastName, relationshipNameIdentityFirstName, relationshipNameIdentityLastName, relationshipType, relationshipMatchType, relationshipMatchingScore, relationshipVerboseMatchModifierScore, relationshipMatchModifierMentor, relationshipMatchModifierMentorSeniorAuthor, relationshipMatchModifierManager, relationshipMatchModifierManagerSeniorAuthor) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", 
+        row)
+    except:
+        print(cursor._last_executed)
+        raise
+#close the connection to the database.
+mydb.commit()
+cursor.close()
+f.close()
+
+
+#Import personArticleDepartment_s3 table
+f = open(outputPath + 'personArticleDepartment.csv','r')
+cursor = mydb.cursor()
+cursor.execute("TRUNCATE TABLE personArticleDepartment")
+csv_data = csv.reader(f)
+#Skip column headers
+next(csv_data)
+for row in csv_data:
+    try:
+        cursor.execute("INSERT INTO personArticleDepartment(personIdentifier, pmid, identityOrganizationalUnit, articleAffiliation, organizationalUnitType, organizationalUnitMatchingScore, organizationalUnitModifier, organizationalUnitModifierScore) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)", 
+        row)
+    except:
+        print(cursor._last_executed)
+        raise
+#close the connection to the database.
+mydb.commit()
+cursor.close()
+f.close()
+
+#Import personArticleScopusTargetAuthorAffiliation_s3 table
+f = open(outputPath + 'personArticleScopusTargetAuthorAffiliation.csv','r')
+cursor = mydb.cursor()
+cursor.execute("TRUNCATE TABLE personArticleScopusTargetAuthorAffiliation")
+csv_data = csv.reader(f)
+#Skip column headers
+next(csv_data)
+for row in csv_data:
+    try:
+        cursor.execute("INSERT INTO personArticleScopusTargetAuthorAffiliation(personIdentifier, pmid, targetAuthorInstitutionalAffiliationSource, scopusTargetAuthorInstitutionalAffiliationIdentity, targetAuthorInstitutionalAffiliationArticleScopusLabel, targetAuthorInstitutionalAffiliationArticleScopusAffiliationId, targetAuthorInstitutionalAffiliationMatchType, targetAuthorInstitutionalAffiliationMatchTypeScore) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)", 
+        row)
+    except:
+        print(cursor._last_executed)
+        raise
+#close the connection to the database.
+mydb.commit()
+cursor.close()
+f.close()
+
+#Import personArticleScopusNonTargetAuthorAffiliation_s3 table
+f = open(outputPath + 'personArticleScopusNonTargetAuthorAffiliation.csv','r')
+cursor = mydb.cursor()
+cursor.execute("TRUNCATE TABLE personArticleScopusNonTargetAuthorAffiliation")
+csv_data = csv.reader(f)
+#Skip column headers
+next(csv_data)
+for row in csv_data:
+    try:
+        cursor.execute("INSERT INTO personArticleScopusNonTargetAuthorAffiliation(personIdentifier, pmid, nonTargetAuthorInstitutionLabel, nonTargetAuthorInstitutionID, nonTargetAuthorInstitutionCount) VALUES(%s, %s, %s, %s, %s)", 
+        row)
+    except:
+        print(cursor._last_executed)
+        raise
+#close the connection to the database.
+mydb.commit()
+cursor.close()
+f.close()
+
+#Import personArticleGrant_s3 table
+f = open(outputPath + 'personArticleGrant.csv','r')
+cursor = mydb.cursor()
+cursor.execute("TRUNCATE TABLE personArticleGrant")
+csv_data = csv.reader(f)
+#Skip column headers
+next(csv_data)
+for row in csv_data:
+    try:
+        cursor.execute("INSERT INTO personArticleGrant(personIdentifier, pmid, articleGrant, grantMatchScore, institutionGrant) VALUES(%s, %s, %s, %s, %s)", 
+        row)
+    except:
+        print(cursor._last_executed)
+        raise
+#close the connection to the database.
+mydb.commit()
+cursor.close()
+f.close()
+
+#Import personArticle_s3_mysql table
+f = open(outputPath + 'personArticle_mysql.csv','r')
+cursor = mydb.cursor()
+cursor.execute("TRUNCATE TABLE personArticle")
+csv_data = csv.reader(f, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True)
+#Skip column headers
+next(csv_data)
+for row in csv_data:
+    #cursor.execute('set profiling = 1')
+    try:
+        cursor.execute("INSERT INTO personArticle(personIdentifier, pmid, totalArticleScoreStandardized, totalArticleScoreNonStandardized, userAssertion, publicationDateStandardized, publicationTypeCanonical, scopusDocID, journalTitleVerbose, articleTitle, feedbackScoreAccepted, feedbackScoreRejected, feedbackScoreNull, articleAuthorNameFirstName, articleAuthorNameLastName, institutionalAuthorNameFirstName, institutionalAuthorNameMiddleName, institutionalAuthorNameLastName, nameMatchFirstScore, nameMatchFirstType, nameMatchMiddleScore, nameMatchMiddleType, nameMatchLastScore, nameMatchLastType, nameMatchModifierScore, nameScoreTotal, emailMatch, emailMatchScore, journalSubfieldScienceMetrixLabel, journalSubfieldScienceMetrixID, journalSubfieldDepartment, journalSubfieldScore, relationshipEvidenceTotalScore, relationshipMinimumTotalScore, relationshipNonMatchCount, relationshipNonMatchScore, articleYear, identityBachelorYear, discrepancyDegreeYearBachelor, discrepancyDegreeYearBachelorScore, identityDoctoralYear, discrepancyDegreeYearDoctoral, discrepancyDegreeYearDoctoralScore, genderScoreArticle, genderScoreIdentity, genderScoreIdentityArticleDiscrepancy, personType, personTypeScore, countArticlesRetrieved, articleCountScore, targetAuthorInstitutionalAffiliationArticlePubmedLabel, pubmedTargetAuthorInstitutionalAffiliationMatchTypeScore, scopusNonTargetAuthorInstitutionalAffiliationSource, scopusNonTargetAuthorInstitutionalAffiliationScore, totalArticleScoreWithoutClustering, clusterScoreAverage, clusterReliabilityScore, clusterScoreModificationOfTotalScore, datePublicationAddedToEntrez, doi, issn, issue, journalTitleISOabbreviation, pages, timesCited, volume) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", 
+        row)
+    except:
+        print(cursor._last_executed)
+        raise
+
+        #cursor.execute('show profiles')
+        #for row in cursor:
+            #print(row)        
+#cursor.execute('set profiling = 0')
+#close the connection to the database.
+mydb.commit()
+cursor.close()
 f.close()
