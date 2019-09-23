@@ -50,7 +50,6 @@ CREATE TABLE `personArticle` (
   `userAssertion` varchar(128) DEFAULT NULL,
   `publicationDateStandardized` varchar(128) DEFAULT NULL,
   `publicationTypeCanonical` varchar(128) DEFAULT NULL,
-  `publicationAbstract` text DEFAULT NULL,
   `scopusDocID` varchar(128) DEFAULT NULL,
   `journalTitleVerbose` varchar(500) DEFAULT 'NULL',
   `articleTitle` varchar(1000) DEFAULT '''NULL''',
