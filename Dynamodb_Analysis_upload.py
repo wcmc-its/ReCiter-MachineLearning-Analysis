@@ -6,6 +6,7 @@ import csv
 import decimal
 from init import pymysql
 import MySQLdb
+import os
 
 dynamodb = boto3.resource('dynamodb')
 
@@ -536,10 +537,16 @@ for i in range(len(items)):
     print("here:", count)
 f.close()
 
-mydb = MySQLdb.connect(host='localhost',
-    user='root',
-    passwd='vivotest',
-    db='reciter_report')
+
+DB_HOST = os.getenv('DB_HOST')
+DB_USERNAME = os.getenv('DB_USERNAME')
+DB_PASSWORD = os.getenv('DB_PASSWORD')
+DB_NAME = os.getenv('DB_NAME')
+
+mydb = MySQLdb.connect(host=DB_HOST,
+    user=DB_USERNAME,
+    passwd=DB_PASSWORD,
+    db=DB_NAME)
 
 cursor = mydb.cursor()
 cursor.execute("TRUNCATE TABLE person")

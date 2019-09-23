@@ -10,8 +10,12 @@ import os
 
 def downloadDirectoryFroms3(bucketName,remoteDirectoryName):
     s3_resource = boto3.resource('s3')
-    bucket = s3_resource.Bucket(bucketName) 
+    bucket = s3_resource.Bucket(bucketName)
+    number = 0
     for object in bucket.objects.filter(Prefix = remoteDirectoryName):
+        number = number + 1
+        #if number == 500:
+        #    break
         print(object)
         if not os.path.exists(os.path.dirname(object.key)):
             os.makedirs(os.path.dirname(object.key))
@@ -536,10 +540,15 @@ for i in range(len(items)):
 f.close()
 
 
-mydb = MySQLdb.connect(host='localhost',
-    user='root',
-    passwd='vivotest',
-    db='reciter_report')
+DB_HOST = os.getenv('DB_HOST')
+DB_USERNAME = os.getenv('DB_USERNAME')
+DB_PASSWORD = os.getenv('DB_PASSWORD')
+DB_NAME = os.getenv('DB_NAME')
+
+mydb = MySQLdb.connect(host=DB_HOST,
+    user=DB_USERNAME,
+    passwd=DB_PASSWORD,
+    db=DB_NAME)
 
 cursor = mydb.cursor()
 #Import person table
