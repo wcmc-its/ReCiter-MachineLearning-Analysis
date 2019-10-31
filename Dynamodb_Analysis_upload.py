@@ -524,15 +524,20 @@ for i in range(len(items)):
         author_temp = count_authors_dict[str(pmid)]
 
         for k in range(author_temp):
-            if 'firstName' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['reCiterArticleAuthorFeatures'][k]:
-                firstName = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['reCiterArticleAuthorFeatures'][k]['firstName']
-            else:
+            try:
+                if 'firstName' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['reCiterArticleAuthorFeatures'][k]:
+                    firstName = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['reCiterArticleAuthorFeatures'][k]['firstName']
+                else:
+                    firstName = ""
+                lastName = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['reCiterArticleAuthorFeatures'][k]['lastName']
+                targetAuthor = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['reCiterArticleAuthorFeatures'][k]['targetAuthor']
+                rank = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['reCiterArticleAuthorFeatures'][k]['rank']
+                f.write(str(personIdentifier) + "," + str(pmid) + "," + str(firstName) + "," + str(lastName) + "," + str(targetAuthor) + "," + str(rank) + "\n")
+            except IndexError:
                 firstName = ""
-            lastName = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['reCiterArticleAuthorFeatures'][k]['lastName']
-            targetAuthor = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['reCiterArticleAuthorFeatures'][k]['targetAuthor']
-            rank = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['reCiterArticleAuthorFeatures'][k]['rank']
-
-            f.write(str(personIdentifier) + "," + str(pmid) + "," + str(firstName) + "," + str(lastName) + "," + str(targetAuthor) + "," + str(rank) + "\n")
+                lastName = ""
+                targetAuthor = ""
+                rank = 0
     count += 1
     print("here:", count)
 f.close()
