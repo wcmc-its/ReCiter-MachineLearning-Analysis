@@ -520,7 +520,10 @@ for i in range(len(items)):
     
     for j in range(article_temp):
         personIdentifier = items[i]['reCiterFeature']['personIdentifier']
-        pmid = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['pmid']
+        try:
+            pmid = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['pmid']
+        except IndexError:
+            pmid = 0
         author_temp = count_authors_dict[str(pmid)]
 
         for k in range(author_temp):
