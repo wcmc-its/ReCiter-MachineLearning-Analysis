@@ -519,13 +519,9 @@ for i in range(len(items)):
     article_temp = count_articles[i][1]
     
     for j in range(article_temp):
+        pmid = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['pmid']
         personIdentifier = items[i]['reCiterFeature']['personIdentifier']
-        try:
-            pmid = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['pmid']
-        except IndexError:
-            pmid = 0
         author_temp = count_authors_dict[str(pmid)]
-
         for k in range(author_temp):
             try:
                 if 'firstName' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['reCiterArticleAuthorFeatures'][k]:
@@ -535,7 +531,7 @@ for i in range(len(items)):
                 lastName = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['reCiterArticleAuthorFeatures'][k]['lastName']
                 targetAuthor = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['reCiterArticleAuthorFeatures'][k]['targetAuthor']
                 rank = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['reCiterArticleAuthorFeatures'][k]['rank']
-                f.write(str(personIdentifier) + "," + str(pmid) + "," + str(firstName) + "," + str(lastName) + "," + str(targetAuthor) + "," + str(rank) + "\n")
+                f.write('"' + str(personIdentifier) + '"' + "," + '"' + str(pmid) + '"' + "," + '"' + str(firstName) + '"' +  "," + '"' + str(lastName) + '"' + "," + '"' + str(targetAuthor) + '"' + "," + '"' + str(rank) + '"' +  "\n")
             except IndexError:
                 firstName = ""
                 lastName = ""
