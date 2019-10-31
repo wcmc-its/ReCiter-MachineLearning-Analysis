@@ -88,7 +88,28 @@ Here we’re going to use a bash script to retrieve data from ReCiter’s featur
    1. If you haven’t yet installed MySQL, consider MariaDB, which is a fork of MySQL. MariaDB has a [median function](https://mariadb.com/kb/en/library/median/), which may come in handy later.
    1. Follow [these instructions](https://medium.com/@chuanshaoye/install-mariadb-on-mac-7c12502eaec7) to install MariaDB.
 1. In your MySQL tool of choice, import the database reciterAnalysis.sql.
-1. Now let’s import the data. Each of the data files corresponds to a table in your newly created database. Select each table and import each one, one by one.
+1. Each of the data files corresponds to a table in your newly created database. Select each table and import each one, one by one.
+
+
+## Generating CSV files from JSON output and import into a MySQL database
+
+1. Prerequisite: existing JSON files output from the Feature Generator API. 
+1. Import the database reciterAnalysis.sql
+1. Go to Terminal enter the following:
+```
+export DB_HOST=[hostname]
+export DB_USERNAME=[username]
+export DB_PASSWORD=[password]
+export DB_NAME=[database name]
+````
+1. Open the S3_AnalysisOutput_upload.py file. Update `originalDataPath` with the location of the JSON files. Update `outputPath` with the location of the CSV files to be output.
+1. In Terminal, run `python S3_AnalysisOutput_upload.py`
+1. This should fully populate a reporting database
+
+
+
+### Run queries
+
 1. Now we can run some queries. Here is one to give you the general idea.
 
 ```
