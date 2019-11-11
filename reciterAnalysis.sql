@@ -189,7 +189,7 @@ CREATE TABLE `personArticleScopusNonTargetAuthorAffiliation` (
 CREATE TABLE `personArticleScopusTargetAuthorAffiliation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `personIdentifier` varchar(128) DEFAULT NULL,
-  `pmid` varchar(128) DEFAULT NULL,
+  `pmid` int(11) DEFAULT 0,
   `targetAuthorInstitutionalAffiliationSource` varchar(128) DEFAULT 'NULL',
   `scopusTargetAuthorInstitutionalAffiliationIdentity` varchar(128) DEFAULT NULL,
   `targetAuthorInstitutionalAffiliationArticleScopusLabel` varchar(2000) DEFAULT '''NULL''',
