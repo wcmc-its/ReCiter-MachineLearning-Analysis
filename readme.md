@@ -93,7 +93,10 @@ Here we’re going to use a bash script to retrieve data from ReCiter’s featur
 
 ## Generating CSV files from JSON output and import into a MySQL database
 
-1. Prerequisite: existing JSON files output from the Feature Generator API. 
+1. Prerequisites: 
+  1. Obtain existing JSON files output from the Feature Generator API. 
+  1. Install PyMySQL: `sudo pip install PyMySQL`
+  1. Install boto3. Go to command line and enter, `pip install boto3 --user`
 1. Import the database reciterAnalysis.sql
 1. Go to Terminal enter the following:
 ```
