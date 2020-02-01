@@ -101,6 +101,7 @@ CREATE TABLE `personArticle` (
   `clusterScoreAverage` float DEFAULT 0,
   `clusterReliabilityScore` float DEFAULT 0,
   `clusterScoreModificationOfTotalScore` float DEFAULT 0,
+  `clusterIdentifier` int(11) DEFAULT 0,
   `datePublicationAddedToEntrez` varchar(128) DEFAULT NULL,
   `doi` varchar(128) DEFAULT NULL,
   `issn` varchar(128) DEFAULT NULL,
