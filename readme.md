@@ -105,8 +105,8 @@ export DB_USERNAME=[username]
 export DB_PASSWORD=[password]
 export DB_NAME=[database name]
 ````
-1. Open the S3_AnalysisOutput_upload.py file. Update `originalDataPath` with the location of the JSON files. Update `outputPath` with the location of the CSV files to be output.
-1. In Terminal, run `python S3_AnalysisOutput_upload.py`
+1. Open the uploadToDatabase.py file. Update `originalDataPath` with the location of the JSON files. Update `outputPath` with the location of the CSV files to be output.
+1. In Terminal, run `python uploadToDatabase.py`. (Note: "rank" is a reserved word so we surrounded that by backticks.)
 1. This should fully populate a reporting database
 
 
