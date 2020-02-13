@@ -2,10 +2,9 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: reciter-report
-  namespace: reciter
+  namespace: reciter-prod
   labels:
     app: reciter-report
-    environment: dev
     tier: backend
     owner: szd2013
   
@@ -18,7 +17,7 @@ spec:
         spec:
           containers:
           - name: reciter-report
-            image: xxxxxxxxxxx.dkr.ecr.<region>.amazonaws.com/wcmc/reciter/report:3c1621d
+            image: CONTAINER_IMAGE
             env:
             - name: DB_USERNAME
               valueFrom: 
