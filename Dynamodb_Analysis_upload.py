@@ -95,8 +95,8 @@ for i in range(len(items)):
         else:
             scopusDocID = ""
         
-        if 'pmcid' in items[i]['reCiterArticleFeatures'][j]:
-            pmcid = items[i]['reCiterArticleFeatures'][j]['pmcid']
+        if 'pmcid' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]:
+            pmcid = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['pmcid']
         else:
             pmcid = ""
         
@@ -249,13 +249,17 @@ for i in range(len(items)):
             clusterScoreAverage = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['averageClusteringEvidence']['clusterScoreAverage']
             clusterReliabilityScore = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['averageClusteringEvidence']['clusterReliabilityScore']
             clusterScoreModificationOfTotalScore = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['averageClusteringEvidence']['clusterScoreModificationOfTotalScore']
-            clusterIdentifier = items[i]['reCiterArticleFeatures'][j]['evidence']['averageClusteringEvidence']['clusterIdentifier']
         else:
-            totalArticleScoreWithoutClustering, clusterScoreAverage, clusterReliabilityScore, clusterScoreModificationOfTotalScore, clusterIdentifier = "", "", "", "", 0
+            totalArticleScoreWithoutClustering, clusterScoreAverage, clusterReliabilityScore, clusterScoreModificationOfTotalScore = "", "", "", ""
+
+        if 'clusterIdentifier' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['averageClusteringEvidence']:
+            clusterIdentifier = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['averageClusteringEvidence']['clusterIdentifier']
+        else :
+            clusterIdentifier = 0
         
         datePublicationAddedToEntrez = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['datePublicationAddedToEntrez']
-        if 'publicationDateDisplay' in items[i]['reCiterArticleFeatures'][j]:
-            publicationDateDisplay = items[i]['reCiterArticleFeatures'][j]['publicationDateDisplay']
+        if 'publicationDateDisplay' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]:
+            publicationDateDisplay = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['publicationDateDisplay']
         else:
             publicationDateDisplay = ""
 
@@ -543,8 +547,8 @@ for i in range(len(items)):
                 lastName = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['reCiterArticleAuthorFeatures'][k]['lastName']
                 targetAuthor = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['reCiterArticleAuthorFeatures'][k]['targetAuthor']
                 rank = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['reCiterArticleAuthorFeatures'][k]['rank']
-                if 'orcid' in items[i]['reCiterArticleFeatures'][j]['reCiterArticleAuthorFeatures'][k]:
-                    orcid = items[i]['reCiterArticleFeatures'][j]['reCiterArticleAuthorFeatures'][k]['orcid']
+                if 'orcid' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['reCiterArticleAuthorFeatures'][k]:
+                    orcid = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['reCiterArticleAuthorFeatures'][k]['orcid']
                 else:
                     orcid = ""
                 f.write(str(personIdentifier) + "," + str(pmid) + "," + '"' + str(firstName) + '"' + "," + '"' + str(lastName) + '"' + "," + str(targetAuthor) + "," + str(rank) + "," + str(orcid) + "\n")
