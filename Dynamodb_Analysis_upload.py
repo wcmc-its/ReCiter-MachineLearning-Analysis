@@ -267,7 +267,7 @@ for i in range(len(items)):
             doi = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['doi']
         else: 
             doi = ""
-
+                              
         if 'issn' in items[i]['reCiterArticleFeatures'][j]:
             issn_temp = len(items[i]['reCiterArticleFeatures'][j]['issn'])
             for k in range(issn_temp):
@@ -278,6 +278,8 @@ for i in range(len(items)):
                     issn = items[i]['reCiterArticleFeatures'][j]['issn'][k]['issn']
                 elif issntype == 'Print':
                     issn = items[i]['reCiterArticleFeatures'][j]['issn'][k]['issn']  
+        else:
+            issn = ""                    
 
         if 'issue' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]:
             issue = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['issue']
