@@ -268,14 +268,16 @@ for i in range(len(items)):
         else: 
             doi = ""
 
-        if 'issn' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]:
-            issn_temp = len(items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['issn'])
+        if 'issn' in items[i]['reCiterArticleFeatures'][j]:
+            issn_temp = len(items[i]['reCiterArticleFeatures'][j]['issn'])
             for k in range(issn_temp):
-                issntype = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['issn'][k]['issntype']
+                issntype = items[i]['reCiterArticleFeatures'][j]['issn'][k]['issntype']
                 if issntype == 'Linking':
-                    issn = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['issn'][k]['issn']
-        else:
-            issn = ""
+                    issn = items[i]['reCiterArticleFeatures'][j]['issn'][k]['issn']
+                elif issntype == 'Electronic':
+                    issn = items[i]['reCiterArticleFeatures'][j]['issn'][k]['issn']
+                elif issntype == 'Print':
+                    issn = items[i]['reCiterArticleFeatures'][j]['issn'][k]['issn']  
 
         if 'issue' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]:
             issue = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['issue']
