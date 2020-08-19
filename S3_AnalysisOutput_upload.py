@@ -91,144 +91,151 @@ for i in range(len(items)):
             largeGroupAuthorship = True
         else:
             largeGroupAuthorship = False
-        
-        if 'feedbackScoreAccepted' in items[i]['reCiterArticleFeatures'][j]['evidence']['acceptedRejectedEvidence']:
-            feedbackScoreAccepted = items[i]['reCiterArticleFeatures'][j]['evidence']['acceptedRejectedEvidence']['feedbackScoreAccepted']
-        else: 
-            feedbackScoreAccepted = 0
-        if 'feedbackScoreRejected' in items[i]['reCiterArticleFeatures'][j]['evidence']['acceptedRejectedEvidence']:
-            feedbackScoreRejected = items[i]['reCiterArticleFeatures'][j]['evidence']['acceptedRejectedEvidence']['feedbackScoreRejected']
-        else: 
-            feedbackScoreRejected = 0
-        if 'feedbackScoreNull' in items[i]['reCiterArticleFeatures'][j]['evidence']['acceptedRejectedEvidence']:
-            feedbackScoreNull = items[i]['reCiterArticleFeatures'][j]['evidence']['acceptedRejectedEvidence']['feedbackScoreNull']
-        else: 
-            feedbackScoreNull = 0
-        
-        if 'articleAuthorName' in items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']:
-            if 'firstName' in items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['articleAuthorName']: 
-                articleAuthorName_firstName = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['articleAuthorName']['firstName']
-            else:
-                articleAuthorName_firstName = ""
-            articleAuthorName_lastName = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['articleAuthorName']['lastName']
-        else:
-            articleAuthorName_firstName, articleAuthorName_lastName = "", ""
-        institutionalAuthorName_firstName = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['institutionalAuthorName']['firstName']
-        if 'middleName' in items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['institutionalAuthorName']:
-            institutionalAuthorName_middleName = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['institutionalAuthorName']['middleName']
-        else:
-            institutionalAuthorName_middleName = ""
-        institutionalAuthorName_lastName = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['institutionalAuthorName']['lastName']
-        nameMatchFirstScore = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameMatchFirstScore']
-        nameMatchFirstType = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameMatchFirstType']
-        nameMatchMiddleScore = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameMatchMiddleScore']
-        nameMatchMiddleType = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameMatchMiddleType']
-        nameMatchLastScore = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameMatchLastScore']
-        nameMatchLastType = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameMatchLastType']
-        nameMatchModifierScore = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameMatchModifierScore']
-        nameScoreTotal = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameScoreTotal']
+        if 'evidence' in items[i]['reCiterArticleFeatures'][j]:
+            if 'acceptedRejectedEvidence' in items[i]['reCiterArticleFeatures'][j]['evidence']:
+                if 'feedbackScoreAccepted' in items[i]['reCiterArticleFeatures'][j]['evidence']['acceptedRejectedEvidence']:
+                    feedbackScoreAccepted = items[i]['reCiterArticleFeatures'][j]['evidence']['acceptedRejectedEvidence']['feedbackScoreAccepted']
+                else: 
+                    feedbackScoreAccepted = 0
+                if 'feedbackScoreRejected' in items[i]['reCiterArticleFeatures'][j]['evidence']['acceptedRejectedEvidence']:
+                    feedbackScoreRejected = items[i]['reCiterArticleFeatures'][j]['evidence']['acceptedRejectedEvidence']['feedbackScoreRejected']
+                else: 
+                    feedbackScoreRejected = 0
+                if 'feedbackScoreNull' in items[i]['reCiterArticleFeatures'][j]['evidence']['acceptedRejectedEvidence']:
+                    feedbackScoreNull = items[i]['reCiterArticleFeatures'][j]['evidence']['acceptedRejectedEvidence']['feedbackScoreNull']
+                else: 
+                    feedbackScoreNull = 0
+            if 'authorNameEvidence' in items[i]['reCiterArticleFeatures'][j]['evidence']:
+                if 'articleAuthorName' in items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']:
+                    if 'firstName' in items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['articleAuthorName']: 
+                        articleAuthorName_firstName = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['articleAuthorName']['firstName']
+                    else:
+                        articleAuthorName_firstName = ""
+                    articleAuthorName_lastName = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['articleAuthorName']['lastName']
+                else:
+                    articleAuthorName_firstName, articleAuthorName_lastName = "", ""
+                institutionalAuthorName_firstName = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['institutionalAuthorName']['firstName']
+                if 'middleName' in items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['institutionalAuthorName']:
+                    institutionalAuthorName_middleName = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['institutionalAuthorName']['middleName']
+                else:
+                    institutionalAuthorName_middleName = ""
+                institutionalAuthorName_lastName = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['institutionalAuthorName']['lastName']
+                nameMatchFirstScore = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameMatchFirstScore']
+                nameMatchFirstType = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameMatchFirstType']
+                nameMatchMiddleScore = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameMatchMiddleScore']
+                nameMatchMiddleType = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameMatchMiddleType']
+                nameMatchLastScore = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameMatchLastScore']
+                nameMatchLastType = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameMatchLastType']
+                nameMatchModifierScore = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameMatchModifierScore']
+                nameScoreTotal = items[i]['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameScoreTotal']
 
-        if 'emailEvidence' in items[i]['reCiterArticleFeatures'][j]['evidence']:
-            emailMatch = items[i]['reCiterArticleFeatures'][j]['evidence']['emailEvidence']['emailMatch']
-            if 'false' in emailMatch:
-                emailMatch = ""
-            emailMatchScore = items[i]['reCiterArticleFeatures'][j]['evidence']['emailEvidence']['emailMatchScore']
-        else:
-            emailMatch, emailMatchScore = "", 0
-        
-        if 'journalCategoryEvidence' in items[i]['reCiterArticleFeatures'][j]['evidence']:
-            journalSubfieldScienceMetrixLabel = items[i]['reCiterArticleFeatures'][j]['evidence']['journalCategoryEvidence']['journalSubfieldScienceMetrixLabel']
-            journalSubfieldScienceMetrixLabel = journalSubfieldScienceMetrixLabel.replace('"', '""')
-            journalSubfieldScienceMetrixID = items[i]['reCiterArticleFeatures'][j]['evidence']['journalCategoryEvidence']['journalSubfieldScienceMetrixID']
-            journalSubfieldDepartment = items[i]['reCiterArticleFeatures'][j]['evidence']['journalCategoryEvidence']['journalSubfieldDepartment']
-            journalSubfieldDepartment = journalSubfieldDepartment.replace('"', '""')
-            journalSubfieldScore = items[i]['reCiterArticleFeatures'][j]['evidence']['journalCategoryEvidence']['journalSubfieldScore']
-        else:
-            journalSubfieldScienceMetrixLabel, journalSubfieldScienceMetrixID, journalSubfieldDepartment, journalSubfieldScore = "", "", "", 0
-        
-        if 'relationshipEvidence' in items[i]['reCiterArticleFeatures'][j]['evidence']:
-            if 'relationshipEvidenceTotalScore' in items[i]['reCiterArticleFeatures'][j]['evidence']['relationshipEvidence']:
-                relationshipEvidenceTotalScore = items[i]['reCiterArticleFeatures'][j]['evidence']['relationshipEvidence']['relationshipEvidenceTotalScore']
+            if 'emailEvidence' in items[i]['reCiterArticleFeatures'][j]['evidence']:
+                emailMatch = items[i]['reCiterArticleFeatures'][j]['evidence']['emailEvidence']['emailMatch']
+                if 'false' in emailMatch:
+                    emailMatch = ""
+                emailMatchScore = items[i]['reCiterArticleFeatures'][j]['evidence']['emailEvidence']['emailMatchScore']
             else:
-                relationshipEvidenceTotalScore = 0
-            if 'relationshipNegativeMatch' in items[i]['reCiterArticleFeatures'][j]['evidence']['relationshipEvidence']:
-                relationshipMinimumTotalScore = items[i]['reCiterArticleFeatures'][j]['evidence']['relationshipEvidence']['relationshipNegativeMatch']['relationshipMinimumTotalScore']
-                relationshipNonMatchCount = items[i]['reCiterArticleFeatures'][j]['evidence']['relationshipEvidence']['relationshipNegativeMatch']['relationshipNonMatchCount']
-                relationshipNonMatchScore = items[i]['reCiterArticleFeatures'][j]['evidence']['relationshipEvidence']['relationshipNegativeMatch']['relationshipNonMatchScore']
+                emailMatch, emailMatchScore = "", 0
+            
+            if 'journalCategoryEvidence' in items[i]['reCiterArticleFeatures'][j]['evidence']:
+                journalSubfieldScienceMetrixLabel = items[i]['reCiterArticleFeatures'][j]['evidence']['journalCategoryEvidence']['journalSubfieldScienceMetrixLabel']
+                journalSubfieldScienceMetrixLabel = journalSubfieldScienceMetrixLabel.replace('"', '""')
+                journalSubfieldScienceMetrixID = items[i]['reCiterArticleFeatures'][j]['evidence']['journalCategoryEvidence']['journalSubfieldScienceMetrixID']
+                journalSubfieldDepartment = items[i]['reCiterArticleFeatures'][j]['evidence']['journalCategoryEvidence']['journalSubfieldDepartment']
+                journalSubfieldDepartment = journalSubfieldDepartment.replace('"', '""')
+                journalSubfieldScore = items[i]['reCiterArticleFeatures'][j]['evidence']['journalCategoryEvidence']['journalSubfieldScore']
             else:
-                relationshipMinimumTotalScore, relationshipNonMatchCount, relationshipNonMatchScore = 0, 0, 0
-        else:
-            relationshipEvidenceTotalScore, relationshipMinimumTotalScore, relationshipNonMatchCount, relationshipNonMatchScore = 0, 0, 0, 0
-        
-        if 'educationYearEvidence' in items[i]['reCiterArticleFeatures'][j]['evidence']:
-            if 'articleYear' in items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']:
-                articleYear = items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']['articleYear']
+                journalSubfieldScienceMetrixLabel, journalSubfieldScienceMetrixID, journalSubfieldDepartment, journalSubfieldScore = "", "", "", 0
+            
+            if 'relationshipEvidence' in items[i]['reCiterArticleFeatures'][j]['evidence']:
+                if 'relationshipEvidenceTotalScore' in items[i]['reCiterArticleFeatures'][j]['evidence']['relationshipEvidence']:
+                    relationshipEvidenceTotalScore = items[i]['reCiterArticleFeatures'][j]['evidence']['relationshipEvidence']['relationshipEvidenceTotalScore']
+                else:
+                    relationshipEvidenceTotalScore = 0
+                if 'relationshipNegativeMatch' in items[i]['reCiterArticleFeatures'][j]['evidence']['relationshipEvidence']:
+                    relationshipMinimumTotalScore = items[i]['reCiterArticleFeatures'][j]['evidence']['relationshipEvidence']['relationshipNegativeMatch']['relationshipMinimumTotalScore']
+                    relationshipNonMatchCount = items[i]['reCiterArticleFeatures'][j]['evidence']['relationshipEvidence']['relationshipNegativeMatch']['relationshipNonMatchCount']
+                    relationshipNonMatchScore = items[i]['reCiterArticleFeatures'][j]['evidence']['relationshipEvidence']['relationshipNegativeMatch']['relationshipNonMatchScore']
+                else:
+                    relationshipMinimumTotalScore, relationshipNonMatchCount, relationshipNonMatchScore = 0, 0, 0
             else:
-                articleYear = 0
-            if 'identityBachelorYear' in items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']:
-                identityBachelorYear = items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']['identityBachelorYear']
+                relationshipEvidenceTotalScore, relationshipMinimumTotalScore, relationshipNonMatchCount, relationshipNonMatchScore = 0, 0, 0, 0
+            
+            if 'educationYearEvidence' in items[i]['reCiterArticleFeatures'][j]['evidence']:
+                if 'articleYear' in items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']:
+                    articleYear = items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']['articleYear']
+                else:
+                    articleYear = 0
+                if 'identityBachelorYear' in items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']:
+                    identityBachelorYear = items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']['identityBachelorYear']
+                else:
+                    identityBachelorYear = ""
+                if 'discrepancyDegreeYearBachelor' in items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']:
+                    discrepancyDegreeYearBachelor = items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']['discrepancyDegreeYearBachelor']
+                else:
+                    discrepancyDegreeYearBachelor = 0
+                if 'discrepancyDegreeYearBachelorScore' in items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']:
+                    discrepancyDegreeYearBachelorScore = items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']['discrepancyDegreeYearBachelorScore']
+                else:
+                    discrepancyDegreeYearBachelorScore = 0
+                if 'identityDoctoralYear' in items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']:
+                    identityDoctoralYear = items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']['identityDoctoralYear']
+                else:
+                    identityDoctoralYear = ""
+                if 'discrepancyDegreeYearDoctoral' in items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']:
+                    discrepancyDegreeYearDoctoral = items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']['discrepancyDegreeYearDoctoral']
+                else:
+                    discrepancyDegreeYearDoctoral = 0
+                if 'discrepancyDegreeYearDoctoralScore' in items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']:
+                    discrepancyDegreeYearDoctoralScore = items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']['discrepancyDegreeYearDoctoralScore']
+                else:
+                    discrepancyDegreeYearDoctoralScore = 0
             else:
-                identityBachelorYear = ""
-            if 'discrepancyDegreeYearBachelor' in items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']:
-                discrepancyDegreeYearBachelor = items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']['discrepancyDegreeYearBachelor']
+                articleYear, identityBachelorYear, discrepancyDegreeYearBachelor, discrepancyDegreeYearBachelorScore, identityDoctoralYear, discrepancyDegreeYearDoctoral, discrepancyDegreeYearDoctoralScore = 0, "", 0, 0, "", 0, 0
+            
+            if 'genderEvidence' in items[i]['reCiterArticleFeatures'][j]['evidence']:
+                genderScoreArticle = items[i]['reCiterArticleFeatures'][j]['evidence']['genderEvidence']['genderScoreArticle']
+                genderScoreIdentity = items[i]['reCiterArticleFeatures'][j]['evidence']['genderEvidence']['genderScoreIdentity']
+                genderScoreIdentityArticleDiscrepancy = items[i]['reCiterArticleFeatures'][j]['evidence']['genderEvidence']['genderScoreIdentityArticleDiscrepancy']
             else:
-                discrepancyDegreeYearBachelor = 0
-            if 'discrepancyDegreeYearBachelorScore' in items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']:
-                discrepancyDegreeYearBachelorScore = items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']['discrepancyDegreeYearBachelorScore']
+                genderScoreArticle, genderScoreIdentity, genderScoreIdentityArticleDiscrepancy = 0, 0, 0
+            
+            if 'personTypeEvidence' in items[i]['reCiterArticleFeatures'][j]['evidence']:
+                personType = items[i]['reCiterArticleFeatures'][j]['evidence']['personTypeEvidence']['personType']
+                personTypeScore = items[i]['reCiterArticleFeatures'][j]['evidence']['personTypeEvidence']['personTypeScore']
             else:
-                discrepancyDegreeYearBachelorScore = 0
-            if 'identityDoctoralYear' in items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']:
-                identityDoctoralYear = items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']['identityDoctoralYear']
+                personType, personTypeScore = "", 0
+            
+            if 'articleCountEvidence' in items[i]['reCiterArticleFeatures'][j]['evidence']:
+                countArticlesRetrieved = items[i]['reCiterArticleFeatures'][j]['evidence']['articleCountEvidence']['countArticlesRetrieved']
+                articleCountScore = items[i]['reCiterArticleFeatures'][j]['evidence']['articleCountEvidence']['articleCountScore']
             else:
-                identityDoctoralYear = ""
-            if 'discrepancyDegreeYearDoctoral' in items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']:
-                discrepancyDegreeYearDoctoral = items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']['discrepancyDegreeYearDoctoral']
-            else:
-                discrepancyDegreeYearDoctoral = 0
-            if 'discrepancyDegreeYearDoctoralScore' in items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']:
-                discrepancyDegreeYearDoctoralScore = items[i]['reCiterArticleFeatures'][j]['evidence']['educationYearEvidence']['discrepancyDegreeYearDoctoralScore']
-            else:
-                discrepancyDegreeYearDoctoralScore = 0
-        else:
-            articleYear, identityBachelorYear, discrepancyDegreeYearBachelor, discrepancyDegreeYearBachelorScore, identityDoctoralYear, discrepancyDegreeYearDoctoral, discrepancyDegreeYearDoctoralScore = 0, "", 0, 0, "", 0, 0
-        
-        if 'genderEvidence' in items[i]['reCiterArticleFeatures'][j]['evidence']:
-            genderScoreArticle = items[i]['reCiterArticleFeatures'][j]['evidence']['genderEvidence']['genderScoreArticle']
-            genderScoreIdentity = items[i]['reCiterArticleFeatures'][j]['evidence']['genderEvidence']['genderScoreIdentity']
-            genderScoreIdentityArticleDiscrepancy = items[i]['reCiterArticleFeatures'][j]['evidence']['genderEvidence']['genderScoreIdentityArticleDiscrepancy']
-        else:
-            genderScoreArticle, genderScoreIdentity, genderScoreIdentityArticleDiscrepancy = 0, 0, 0
-        
-        if 'personTypeEvidence' in items[i]['reCiterArticleFeatures'][j]['evidence']:
-            personType = items[i]['reCiterArticleFeatures'][j]['evidence']['personTypeEvidence']['personType']
-            personTypeScore = items[i]['reCiterArticleFeatures'][j]['evidence']['personTypeEvidence']['personTypeScore']
-        else:
-            personType, personTypeScore = "", 0
-        
-        countArticlesRetrieved = items[i]['reCiterArticleFeatures'][j]['evidence']['articleCountEvidence']['countArticlesRetrieved']
-        articleCountScore = items[i]['reCiterArticleFeatures'][j]['evidence']['articleCountEvidence']['articleCountScore']
-        
-        if 'pubmedTargetAuthorAffiliation' in items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']:
-            targetAuthorInstitutionalAffiliationArticlePubmedLabel = items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['pubmedTargetAuthorAffiliation']['targetAuthorInstitutionalAffiliationArticlePubmedLabel']
-            targetAuthorInstitutionalAffiliationArticlePubmedLabel = targetAuthorInstitutionalAffiliationArticlePubmedLabel.replace('"', '""')
-            pubmedTargetAuthorInstitutionalAffiliationMatchTypeScore = items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['pubmedTargetAuthorAffiliation']['targetAuthorInstitutionalAffiliationMatchTypeScore']
-        else:
-            targetAuthorInstitutionalAffiliationArticlePubmedLabel, pubmedTargetAuthorInstitutionalAffiliationMatchTypeScore = "", 0
-        
-        if 'scopusNonTargetAuthorAffiliation' in items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']:
-            scopusNonTargetAuthorInstitutionalAffiliationSource = items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusNonTargetAuthorAffiliation']['nonTargetAuthorInstitutionalAffiliationSource']
-            scopusNonTargetAuthorInstitutionalAffiliationScore = items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusNonTargetAuthorAffiliation']['nonTargetAuthorInstitutionalAffiliationScore']
-        else:
-            scopusNonTargetAuthorInstitutionalAffiliationSource, scopusNonTargetAuthorInstitutionalAffiliationScore= "", 0
-        
-        totalArticleScoreWithoutClustering = items[i]['reCiterArticleFeatures'][j]['evidence']['averageClusteringEvidence']['totalArticleScoreWithoutClustering']
-        clusterScoreAverage = items[i]['reCiterArticleFeatures'][j]['evidence']['averageClusteringEvidence']['clusterScoreAverage']
-        clusterReliabilityScore = items[i]['reCiterArticleFeatures'][j]['evidence']['averageClusteringEvidence']['clusterReliabilityScore']
-        clusterScoreModificationOfTotalScore = items[i]['reCiterArticleFeatures'][j]['evidence']['averageClusteringEvidence']['clusterScoreModificationOfTotalScore']
-        if 'clusterIdentifier' in items[i]['reCiterArticleFeatures'][j]['evidence']['averageClusteringEvidence']:
-            clusterIdentifier = items[i]['reCiterArticleFeatures'][j]['evidence']['averageClusteringEvidence']['clusterIdentifier']
-        else :
-            clusterIdentifier = 0
+                countArticlesRetrieved,  articleCountScore= 0,0
+            
+            if 'affiliationEvidence' in items[i]['reCiterArticleFeatures'][j]['evidence']:
+                if 'pubmedTargetAuthorAffiliation' in items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']:
+                    targetAuthorInstitutionalAffiliationArticlePubmedLabel = items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['pubmedTargetAuthorAffiliation']['targetAuthorInstitutionalAffiliationArticlePubmedLabel']
+                    targetAuthorInstitutionalAffiliationArticlePubmedLabel = targetAuthorInstitutionalAffiliationArticlePubmedLabel.replace('"', '""')
+                    pubmedTargetAuthorInstitutionalAffiliationMatchTypeScore = items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['pubmedTargetAuthorAffiliation']['targetAuthorInstitutionalAffiliationMatchTypeScore']
+                else:
+                    targetAuthorInstitutionalAffiliationArticlePubmedLabel, pubmedTargetAuthorInstitutionalAffiliationMatchTypeScore = "", 0
+            
+            if 'affiliationEvidence' in items[i]['reCiterArticleFeatures'][j]['evidence']:
+                if 'scopusNonTargetAuthorAffiliation' in items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']:
+                    scopusNonTargetAuthorInstitutionalAffiliationSource = items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusNonTargetAuthorAffiliation']['nonTargetAuthorInstitutionalAffiliationSource']
+                    scopusNonTargetAuthorInstitutionalAffiliationScore = items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusNonTargetAuthorAffiliation']['nonTargetAuthorInstitutionalAffiliationScore']
+                else:
+                    scopusNonTargetAuthorInstitutionalAffiliationSource, scopusNonTargetAuthorInstitutionalAffiliationScore= "", 0
+
+            if 'averageClusteringEvidence' in items[i]['reCiterArticleFeatures'][j]['evidence']:
+                totalArticleScoreWithoutClustering = items[i]['reCiterArticleFeatures'][j]['evidence']['averageClusteringEvidence']['totalArticleScoreWithoutClustering']
+                clusterScoreAverage = items[i]['reCiterArticleFeatures'][j]['evidence']['averageClusteringEvidence']['clusterScoreAverage']
+                clusterReliabilityScore = items[i]['reCiterArticleFeatures'][j]['evidence']['averageClusteringEvidence']['clusterReliabilityScore']
+                clusterScoreModificationOfTotalScore = items[i]['reCiterArticleFeatures'][j]['evidence']['averageClusteringEvidence']['clusterScoreModificationOfTotalScore']
+                if 'clusterIdentifier' in items[i]['reCiterArticleFeatures'][j]['evidence']['averageClusteringEvidence']:
+                    clusterIdentifier = items[i]['reCiterArticleFeatures'][j]['evidence']['averageClusteringEvidence']['clusterIdentifier']
+                else :
+                    clusterIdentifier = 0
 
         if 'publicationDateDisplay' in items[i]['reCiterArticleFeatures'][j]:
             publicationDateDisplay = items[i]['reCiterArticleFeatures'][j]['publicationDateDisplay']
@@ -244,13 +251,19 @@ for i in range(len(items)):
             doi = items[i]['reCiterArticleFeatures'][j]['doi']
         else: 
             doi = ""
-
+        #print(items[i]['reCiterArticleFeatures'][j])
         if 'issn' in items[i]['reCiterArticleFeatures'][j]:
             issn_temp = len(items[i]['reCiterArticleFeatures'][j]['issn'])
             for k in range(issn_temp):
                 issntype = items[i]['reCiterArticleFeatures'][j]['issn'][k]['issntype']
                 if issntype == 'Linking':
                     issn = items[i]['reCiterArticleFeatures'][j]['issn'][k]['issn']
+                if issntype == 'Print':
+                    issn = items[i]['reCiterArticleFeatures'][j]['issn'][k]['issn']
+                if issntype == 'Electronic':
+                    issn = items[i]['reCiterArticleFeatures'][j]['issn'][k]['issn']
+                if issntype == 'Undetermined':
+                    issn = items[i]['reCiterArticleFeatures'][j]['issn'][k]['issn'] 
         else:
             issn = ""
 
@@ -335,20 +348,21 @@ count = 0
 for i in range(len(items)):
     article_temp = len(items[i]['reCiterArticleFeatures'])
     for j in range(article_temp):
-        if 'scopusNonTargetAuthorAffiliation' in items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']:
-            if 'nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution' in items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusNonTargetAuthorAffiliation']:
-                scopusNonTargetAuthorAffiliation_temp = len(items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusNonTargetAuthorAffiliation']['nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution'])
-        
-                for k in range(scopusNonTargetAuthorAffiliation_temp):
-                    personIdentifier = items[i]['personIdentifier']
-                    pmid = items[i]['reCiterArticleFeatures'][j]['pmid']
-                    nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution = items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusNonTargetAuthorAffiliation']['nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution'][k]
-                    #since the nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution field contains more than one featureseparated by comma, and string feature contains comma, we need to disdinguish between this two by the following code
-                    count_comma = nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution.count(',')
-                    comma_difference = count_comma - 2
-                    if comma_difference != 0:
-                        nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution = nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution.replace(",", ".", comma_difference)
-                    f.write(str(personIdentifier) + "," + str(pmid) + "," + str(nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution) + "\n")
+        if 'affiliationEvidence' in items[i]['reCiterArticleFeatures'][j]['evidence']:
+            if 'scopusNonTargetAuthorAffiliation' in items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']:
+                if 'nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution' in items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusNonTargetAuthorAffiliation']:
+                    scopusNonTargetAuthorAffiliation_temp = len(items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusNonTargetAuthorAffiliation']['nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution'])
+            
+                    for k in range(scopusNonTargetAuthorAffiliation_temp):
+                        personIdentifier = items[i]['personIdentifier']
+                        pmid = items[i]['reCiterArticleFeatures'][j]['pmid']
+                        nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution = items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusNonTargetAuthorAffiliation']['nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution'][k]
+                        #since the nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution field contains more than one featureseparated by comma, and string feature contains comma, we need to disdinguish between this two by the following code
+                        count_comma = nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution.count(',')
+                        comma_difference = count_comma - 2
+                        if comma_difference != 0:
+                            nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution = nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution.replace(",", ".", comma_difference)
+                        f.write(str(personIdentifier) + "," + str(pmid) + "," + str(nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution) + "\n")
     count += 1
     print("here:", count)
 f.close()
@@ -361,28 +375,29 @@ count = 0
 for i in range(len(items)):
     article_temp = len(items[i]['reCiterArticleFeatures'])
     for j in range(article_temp):
-        if 'scopusTargetAuthorAffiliation' in items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']:
-            scopusTargetAuthorAffiliation_temp = len(items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusTargetAuthorAffiliation'])
-        
-            for k in range(scopusTargetAuthorAffiliation_temp):
-                personIdentifier = items[i]['personIdentifier']
-                pmid = items[i]['reCiterArticleFeatures'][j]['pmid']
-                targetAuthorInstitutionalAffiliationSource = items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusTargetAuthorAffiliation'][k]['targetAuthorInstitutionalAffiliationSource']
-                if 'scopusTargetAuthorInstitutionalAffiliationIdentity' in items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusTargetAuthorAffiliation'][k]:
-                    scopusTargetAuthorInstitutionalAffiliationIdentity = items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusTargetAuthorAffiliation'][k]['targetAuthorInstitutionalAffiliationIdentity']
-                else:
-                    scopusTargetAuthorInstitutionalAffiliationIdentity = ""
-                if 'targetAuthorInstitutionalAffiliationArticleScopusLabel' in items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusTargetAuthorAffiliation'][k]:
-                    targetAuthorInstitutionalAffiliationArticleScopusLabel = items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusTargetAuthorAffiliation'][k]['targetAuthorInstitutionalAffiliationArticleScopusLabel']
-                else:
-                    targetAuthorInstitutionalAffiliationArticleScopusLabel = ""
-                targetAuthorInstitutionalAffiliationArticleScopusAffiliationId = items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusTargetAuthorAffiliation'][k]['targetAuthorInstitutionalAffiliationArticleScopusAffiliationId']
-                targetAuthorInstitutionalAffiliationMatchType = items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusTargetAuthorAffiliation'][k]['targetAuthorInstitutionalAffiliationMatchType']
-                targetAuthorInstitutionalAffiliationMatchTypeScore = items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusTargetAuthorAffiliation'][k]['targetAuthorInstitutionalAffiliationMatchTypeScore']
+        if 'affiliationEvidence' in items[i]['reCiterArticleFeatures'][j]['evidence']:
+            if 'scopusTargetAuthorAffiliation' in items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']:
+                scopusTargetAuthorAffiliation_temp = len(items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusTargetAuthorAffiliation'])
+            
+                for k in range(scopusTargetAuthorAffiliation_temp):
+                    personIdentifier = items[i]['personIdentifier']
+                    pmid = items[i]['reCiterArticleFeatures'][j]['pmid']
+                    targetAuthorInstitutionalAffiliationSource = items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusTargetAuthorAffiliation'][k]['targetAuthorInstitutionalAffiliationSource']
+                    if 'scopusTargetAuthorInstitutionalAffiliationIdentity' in items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusTargetAuthorAffiliation'][k]:
+                        scopusTargetAuthorInstitutionalAffiliationIdentity = items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusTargetAuthorAffiliation'][k]['targetAuthorInstitutionalAffiliationIdentity']
+                    else:
+                        scopusTargetAuthorInstitutionalAffiliationIdentity = ""
+                    if 'targetAuthorInstitutionalAffiliationArticleScopusLabel' in items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusTargetAuthorAffiliation'][k]:
+                        targetAuthorInstitutionalAffiliationArticleScopusLabel = items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusTargetAuthorAffiliation'][k]['targetAuthorInstitutionalAffiliationArticleScopusLabel']
+                    else:
+                        targetAuthorInstitutionalAffiliationArticleScopusLabel = ""
+                    targetAuthorInstitutionalAffiliationArticleScopusAffiliationId = items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusTargetAuthorAffiliation'][k]['targetAuthorInstitutionalAffiliationArticleScopusAffiliationId']
+                    targetAuthorInstitutionalAffiliationMatchType = items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusTargetAuthorAffiliation'][k]['targetAuthorInstitutionalAffiliationMatchType']
+                    targetAuthorInstitutionalAffiliationMatchTypeScore = items[i]['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusTargetAuthorAffiliation'][k]['targetAuthorInstitutionalAffiliationMatchTypeScore']
 
-                f.write(str(personIdentifier) + "," + str(pmid) + "," + str(targetAuthorInstitutionalAffiliationSource) + "," 
-                    + '"' + str(scopusTargetAuthorInstitutionalAffiliationIdentity) + '"' + "," + '"' + str(targetAuthorInstitutionalAffiliationArticleScopusLabel) + '"' + "," + str(targetAuthorInstitutionalAffiliationArticleScopusAffiliationId) + "," 
-                    + str(targetAuthorInstitutionalAffiliationMatchType) + "," + str(targetAuthorInstitutionalAffiliationMatchTypeScore) + "\n")
+                    f.write(str(personIdentifier) + "," + str(pmid) + "," + str(targetAuthorInstitutionalAffiliationSource) + "," 
+                        + '"' + str(scopusTargetAuthorInstitutionalAffiliationIdentity) + '"' + "," + '"' + str(targetAuthorInstitutionalAffiliationArticleScopusLabel) + '"' + "," + str(targetAuthorInstitutionalAffiliationArticleScopusAffiliationId) + "," 
+                        + str(targetAuthorInstitutionalAffiliationMatchType) + "," + str(targetAuthorInstitutionalAffiliationMatchTypeScore) + "\n")
     count += 1
     print("here:", count)
 f.close()

@@ -2,7 +2,7 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: reciter-report
-  namespace: reciter-prod
+  namespace: reciter
   labels:
     app: reciter-report
     tier: backend
@@ -56,11 +56,11 @@ spec:
                   key: DB_NAME
             resources:
               requests:
-                memory: 5G
-                cpu: 2
+                memory: 4G
+                cpu: 1.5
               limits:
-                memory: 5G
-                cpu: 2
+                memory: 4G
+                cpu: 1.6
             readinessProbe:
               exec:
                 command:
@@ -68,4 +68,6 @@ spec:
                 - /usr/src/app/Dynamodb_Analysis_upload.py
               initialDelaySeconds: 10
               periodSeconds: 5
+          nodeSelector:
+            lifecycle: Ec2Spot
           restartPolicy: OnFailure
