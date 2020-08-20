@@ -37,6 +37,8 @@ def scan_table(table_name): #runtime: about 15min
     
     return items
 
+outputPath = '/usr/src/app/ReCiter/'
+
 #call scan_table function
 items = scan_table('Analysis')
 print("Count Items from DynamoDB:", len(items)) 
@@ -54,7 +56,7 @@ print("Count Items from count_articles list:", len(count_articles))
 print(len(no_article_person_list))
 
 
-outputPath = '/usr/src/app/ReCiter/'
+
 
 #code for personArticle table
 #open a csv file in the directory you preferred
@@ -574,160 +576,114 @@ mydb = MySQLdb.connect(host=DB_HOST,
     db=DB_NAME)
 
 cursor = mydb.cursor()
-cursor.execute("TRUNCATE TABLE person")
+cursor.execute('SET autocommit = 0')
+mydb.commit()
 #Import person table
 f = open(outputPath + 'person.csv','r')
 csv_data = csv.reader(f)
+cursor.execute("TRUNCATE TABLE person")
+person = []
 #Skip column headers
 next(csv_data)
 for row in csv_data:
-    try:
-        cursor.execute("INSERT INTO person(personIdentifier, dateAdded, dateUpdated, `precision`, recall, countSuggestedArticles, overallAccuracy, mode) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)", 
-        row)
-    except:
-        print(cursor._last_executed)
-        raise
-#close the connection to the database.
-mydb.commit()
-cursor.close()
+    person.append(tuple(row))
+    
+cursor.executemany("INSERT INTO person(personIdentifier, dateAdded, dateUpdated, `precision`, recall, countSuggestedArticles, overallAccuracy, mode) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)", person)
 f.close()
 
 #Import personArticleAuthor_s3 table
 f = open(outputPath + 'personArticleAuthor.csv','r')
-cursor = mydb.cursor()
-cursor.execute("TRUNCATE TABLE personArticleAuthor")
 csv_data = csv.reader(f)
+cursor.execute("TRUNCATE TABLE personArticleAuthor")
 #Skip column headers
 next(csv_data)
+personArticleAuthor = []
 for row in csv_data:
-    try:
-        cursor.execute("INSERT INTO personArticleAuthor(personIdentifier, pmid, authorFirstName, authorLastName, targetAuthor, rank, orcid) VALUES(%s, %s, %s, %s, %s, %s, %s)", 
-        row)
-    except:
-        print(cursor._last_executed)
-        raise
-#close the connection to the database.
-mydb.commit()
-cursor.close()
+    personArticleAuthor.append(tuple(row))
+
+cursor.executemany("INSERT INTO personArticleAuthor(personIdentifier, pmid, authorFirstName, authorLastName, targetAuthor, rank, orcid) VALUES(%s, %s, %s, %s, %s, %s, %s)", personArticleAuthor)
 f.close()
 
 #Import personArticleRelationship_s3 table
 f = open(outputPath + 'personArticleRelationship.csv','r')
-cursor = mydb.cursor()
-cursor.execute("TRUNCATE TABLE personArticleRelationship")
 csv_data = csv.reader(f)
+cursor.execute("TRUNCATE TABLE personArticleRelationship")
 #Skip column headers
 next(csv_data)
+personArticleRelationship = []
 for row in csv_data:
-    try:
-        cursor.execute("INSERT INTO personArticleRelationship(personIdentifier, pmid, relationshipNameArticleFirstName, relationshipNameArticleLastName, relationshipNameIdentityFirstName, relationshipNameIdentityLastName, relationshipType, relationshipMatchType, relationshipMatchingScore, relationshipVerboseMatchModifierScore, relationshipMatchModifierMentor, relationshipMatchModifierMentorSeniorAuthor, relationshipMatchModifierManager, relationshipMatchModifierManagerSeniorAuthor) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", 
-        row)
-    except:
-        print(cursor._last_executed)
-        raise
-#close the connection to the database.
-mydb.commit()
-cursor.close()
+    personArticleRelationship.append(tuple(row))
+    
+cursor.executemany("INSERT INTO personArticleRelationship(personIdentifier, pmid, relationshipNameArticleFirstName, relationshipNameArticleLastName, relationshipNameIdentityFirstName, relationshipNameIdentityLastName, relationshipType, relationshipMatchType, relationshipMatchingScore, relationshipVerboseMatchModifierScore, relationshipMatchModifierMentor, relationshipMatchModifierMentorSeniorAuthor, relationshipMatchModifierManager, relationshipMatchModifierManagerSeniorAuthor) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", personArticleRelationship)
 f.close()
 
 
 #Import personArticleDepartment_s3 table
 f = open(outputPath + 'personArticleDepartment.csv','r')
-cursor = mydb.cursor()
-cursor.execute("TRUNCATE TABLE personArticleDepartment")
 csv_data = csv.reader(f)
+cursor.execute("TRUNCATE TABLE personArticleDepartment")
 #Skip column headers
 next(csv_data)
+personArticleDepartment = []
 for row in csv_data:
-    try:
-        cursor.execute("INSERT INTO personArticleDepartment(personIdentifier, pmid, identityOrganizationalUnit, articleAffiliation, organizationalUnitType, organizationalUnitMatchingScore, organizationalUnitModifier, organizationalUnitModifierScore) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)", 
-        row)
-    except:
-        print(cursor._last_executed)
-        raise
-#close the connection to the database.
-mydb.commit()
-cursor.close()
+    personArticleDepartment.append(tuple(row))
+
+cursor.executemany("INSERT INTO personArticleDepartment(personIdentifier, pmid, identityOrganizationalUnit, articleAffiliation, organizationalUnitType, organizationalUnitMatchingScore, organizationalUnitModifier, organizationalUnitModifierScore) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)", personArticleDepartment)
 f.close()
 
 #Import personArticleScopusTargetAuthorAffiliation_s3 table
 f = open(outputPath + 'personArticleScopusTargetAuthorAffiliation.csv','r')
-cursor = mydb.cursor()
-cursor.execute("TRUNCATE TABLE personArticleScopusTargetAuthorAffiliation")
 csv_data = csv.reader(f)
+cursor.execute("TRUNCATE TABLE personArticleScopusTargetAuthorAffiliation")
 #Skip column headers
 next(csv_data)
+personArticleScopusTargetAuthorAffiliation = []
 for row in csv_data:
-    try:
-        cursor.execute("INSERT INTO personArticleScopusTargetAuthorAffiliation(personIdentifier, pmid, targetAuthorInstitutionalAffiliationSource, scopusTargetAuthorInstitutionalAffiliationIdentity, targetAuthorInstitutionalAffiliationArticleScopusLabel, targetAuthorInstitutionalAffiliationArticleScopusAffiliationId, targetAuthorInstitutionalAffiliationMatchType, targetAuthorInstitutionalAffiliationMatchTypeScore) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)", 
-        row)
-    except:
-        print(cursor._last_executed)
-        raise
-#close the connection to the database.
-mydb.commit()
-cursor.close()
+    personArticleScopusTargetAuthorAffiliation.append(tuple(row))
+
+cursor.executemany("INSERT INTO personArticleScopusTargetAuthorAffiliation(personIdentifier, pmid, targetAuthorInstitutionalAffiliationSource, scopusTargetAuthorInstitutionalAffiliationIdentity, targetAuthorInstitutionalAffiliationArticleScopusLabel, targetAuthorInstitutionalAffiliationArticleScopusAffiliationId, targetAuthorInstitutionalAffiliationMatchType, targetAuthorInstitutionalAffiliationMatchTypeScore) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)", personArticleScopusTargetAuthorAffiliation)
 f.close()
 
 #Import personArticleScopusNonTargetAuthorAffiliation_s3 table
 f = open(outputPath + 'personArticleScopusNonTargetAuthorAffiliation.csv','r')
-cursor = mydb.cursor()
-cursor.execute("TRUNCATE TABLE personArticleScopusNonTargetAuthorAffiliation")
 csv_data = csv.reader(f)
+cursor.execute("TRUNCATE TABLE personArticleScopusNonTargetAuthorAffiliation")
 #Skip column headers
 next(csv_data)
+personArticleScopusNonTargetAuthorAffiliation = []
 for row in csv_data:
-    try:
-        cursor.execute("INSERT INTO personArticleScopusNonTargetAuthorAffiliation(personIdentifier, pmid, nonTargetAuthorInstitutionLabel, nonTargetAuthorInstitutionID, nonTargetAuthorInstitutionCount) VALUES(%s, %s, %s, %s, %s)", 
-        row)
-    except:
-        print(cursor._last_executed)
-        raise
-#close the connection to the database.
-mydb.commit()
-cursor.close()
+    personArticleScopusNonTargetAuthorAffiliation.append(tuple(row))
+
+cursor.executemany("INSERT INTO personArticleScopusNonTargetAuthorAffiliation(personIdentifier, pmid, nonTargetAuthorInstitutionLabel, nonTargetAuthorInstitutionID, nonTargetAuthorInstitutionCount) VALUES(%s, %s, %s, %s, %s)", personArticleScopusNonTargetAuthorAffiliation)
 f.close()
 
 #Import personArticleGrant_s3 table
 f = open(outputPath + 'personArticleGrant.csv','r')
-cursor = mydb.cursor()
-cursor.execute("TRUNCATE TABLE personArticleGrant")
 csv_data = csv.reader(f)
+cursor.execute("TRUNCATE TABLE personArticleGrant")
 #Skip column headers
 next(csv_data)
+personArticleGrant = []
 for row in csv_data:
-    try:
-        cursor.execute("INSERT INTO personArticleGrant(personIdentifier, pmid, articleGrant, grantMatchScore, institutionGrant) VALUES(%s, %s, %s, %s, %s)", 
-        row)
-    except:
-        print(cursor._last_executed)
-        raise
-#close the connection to the database.
-mydb.commit()
-cursor.close()
+    personArticleGrant.append(tuple(row))
+
+cursor.executemany("INSERT INTO personArticleGrant(personIdentifier, pmid, articleGrant, grantMatchScore, institutionGrant) VALUES(%s, %s, %s, %s, %s)", personArticleGrant)
 f.close()
 
 #Import personArticle_s3_mysql table
 f = open(outputPath + 'personArticle_mysql.csv','r')
-cursor = mydb.cursor()
-cursor.execute("TRUNCATE TABLE personArticle")
 csv_data = csv.reader(f, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True)
+cursor.execute("TRUNCATE TABLE personArticle")
 #Skip column headers
 next(csv_data)
+personArticle = []
 for row in csv_data:
-    #cursor.execute('set profiling = 1')
-    try:
-        cursor.execute("INSERT INTO personArticle(personIdentifier, pmid, pmcid, totalArticleScoreStandardized, totalArticleScoreNonStandardized, userAssertion, publicationDateDisplay, publicationDateStandardized, publicationTypeCanonical, scopusDocID, journalTitleVerbose, articleTitle, feedbackScoreAccepted, feedbackScoreRejected, feedbackScoreNull, articleAuthorNameFirstName, articleAuthorNameLastName, institutionalAuthorNameFirstName, institutionalAuthorNameMiddleName, institutionalAuthorNameLastName, nameMatchFirstScore, nameMatchFirstType, nameMatchMiddleScore, nameMatchMiddleType, nameMatchLastScore, nameMatchLastType, nameMatchModifierScore, nameScoreTotal, emailMatch, emailMatchScore, journalSubfieldScienceMetrixLabel, journalSubfieldScienceMetrixID, journalSubfieldDepartment, journalSubfieldScore, relationshipEvidenceTotalScore, relationshipMinimumTotalScore, relationshipNonMatchCount, relationshipNonMatchScore, articleYear, identityBachelorYear, discrepancyDegreeYearBachelor, discrepancyDegreeYearBachelorScore, identityDoctoralYear, discrepancyDegreeYearDoctoral, discrepancyDegreeYearDoctoralScore, genderScoreArticle, genderScoreIdentity, genderScoreIdentityArticleDiscrepancy, personType, personTypeScore, countArticlesRetrieved, articleCountScore, targetAuthorInstitutionalAffiliationArticlePubmedLabel, pubmedTargetAuthorInstitutionalAffiliationMatchTypeScore, scopusNonTargetAuthorInstitutionalAffiliationSource, scopusNonTargetAuthorInstitutionalAffiliationScore, totalArticleScoreWithoutClustering, clusterScoreAverage, clusterReliabilityScore, clusterScoreModificationOfTotalScore, datePublicationAddedToEntrez, clusterIdentifier, doi, issn, issue, journalTitleISOabbreviation, pages, timesCited, volume) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", 
-        row)
-    except:
-        print(cursor._last_executed)
-        raise
+    personArticle.append(tuple(row))
 
-        #cursor.execute('show profiles')
-        #for row in cursor:
-            #print(row)        
-#cursor.execute('set profiling = 0')
+cursor.executemany("INSERT INTO personArticle(personIdentifier, pmid, pmcid, totalArticleScoreStandardized, totalArticleScoreNonStandardized, userAssertion, publicationDateDisplay, publicationDateStandardized, publicationTypeCanonical, scopusDocID, journalTitleVerbose, articleTitle, feedbackScoreAccepted, feedbackScoreRejected, feedbackScoreNull, articleAuthorNameFirstName, articleAuthorNameLastName, institutionalAuthorNameFirstName, institutionalAuthorNameMiddleName, institutionalAuthorNameLastName, nameMatchFirstScore, nameMatchFirstType, nameMatchMiddleScore, nameMatchMiddleType, nameMatchLastScore, nameMatchLastType, nameMatchModifierScore, nameScoreTotal, emailMatch, emailMatchScore, journalSubfieldScienceMetrixLabel, journalSubfieldScienceMetrixID, journalSubfieldDepartment, journalSubfieldScore, relationshipEvidenceTotalScore, relationshipMinimumTotalScore, relationshipNonMatchCount, relationshipNonMatchScore, articleYear, identityBachelorYear, discrepancyDegreeYearBachelor, discrepancyDegreeYearBachelorScore, identityDoctoralYear, discrepancyDegreeYearDoctoral, discrepancyDegreeYearDoctoralScore, genderScoreArticle, genderScoreIdentity, genderScoreIdentityArticleDiscrepancy, personType, personTypeScore, countArticlesRetrieved, articleCountScore, targetAuthorInstitutionalAffiliationArticlePubmedLabel, pubmedTargetAuthorInstitutionalAffiliationMatchTypeScore, scopusNonTargetAuthorInstitutionalAffiliationSource, scopusNonTargetAuthorInstitutionalAffiliationScore, totalArticleScoreWithoutClustering, clusterScoreAverage, clusterReliabilityScore, clusterScoreModificationOfTotalScore, datePublicationAddedToEntrez, clusterIdentifier, doi, issn, issue, journalTitleISOabbreviation, pages, timesCited, volume) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+ personArticle)
+
 #close the connection to the database.
 mydb.commit()
 cursor.close()
-f.close()
+f.close() 
