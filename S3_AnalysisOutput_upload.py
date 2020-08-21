@@ -600,6 +600,7 @@ for row in csv_data:
     person.append(tuple(row))
     
 cursor.executemany("INSERT INTO person(personIdentifier, dateAdded, dateUpdated, `precision`, recall, countSuggestedArticles, overallAccuracy, mode) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)", person)
+mydb.commit()
 f.close()
 
 #Import personArticleAuthor_s3 table
@@ -610,6 +611,7 @@ for row in csv_data:
     personArticleAuthor.append(tuple(row))
 
 cursor.executemany("INSERT INTO personArticleAuthor(personIdentifier, pmid, authorFirstName, authorLastName, targetAuthor, rank, orcid) VALUES(%s, %s, %s, %s, %s, %s, %s)", personArticleAuthor)
+mydb.commit()
 f.close()
 
 #Import personArticleRelationship_s3 table
@@ -620,6 +622,7 @@ for row in csv_data:
     personArticleRelationship.append(tuple(row))
     
 cursor.executemany("INSERT INTO personArticleRelationship(personIdentifier, pmid, relationshipNameArticleFirstName, relationshipNameArticleLastName, relationshipNameIdentityFirstName, relationshipNameIdentityLastName, relationshipType, relationshipMatchType, relationshipMatchingScore, relationshipVerboseMatchModifierScore, relationshipMatchModifierMentor, relationshipMatchModifierMentorSeniorAuthor, relationshipMatchModifierManager, relationshipMatchModifierManagerSeniorAuthor) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", personArticleRelationship)
+mydb.commit()
 f.close()
 
 
@@ -631,6 +634,7 @@ for row in csv_data:
     personArticleDepartment.append(tuple(row))
 
 cursor.executemany("INSERT INTO personArticleDepartment(personIdentifier, pmid, identityOrganizationalUnit, articleAffiliation, organizationalUnitType, organizationalUnitMatchingScore, organizationalUnitModifier, organizationalUnitModifierScore) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)", personArticleDepartment)
+mydb.commit()
 f.close()
 
 #Import personArticleScopusTargetAuthorAffiliation_s3 table
@@ -641,6 +645,7 @@ for row in csv_data:
     personArticleScopusTargetAuthorAffiliation.append(tuple(row))
 
 cursor.executemany("INSERT INTO personArticleScopusTargetAuthorAffiliation(personIdentifier, pmid, targetAuthorInstitutionalAffiliationSource, scopusTargetAuthorInstitutionalAffiliationIdentity, targetAuthorInstitutionalAffiliationArticleScopusLabel, targetAuthorInstitutionalAffiliationArticleScopusAffiliationId, targetAuthorInstitutionalAffiliationMatchType, targetAuthorInstitutionalAffiliationMatchTypeScore) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)", personArticleScopusTargetAuthorAffiliation)
+mydb.commit()
 f.close()
 
 #Import personArticleScopusNonTargetAuthorAffiliation_s3 table
@@ -651,6 +656,7 @@ for row in csv_data:
     personArticleScopusNonTargetAuthorAffiliation.append(tuple(row))
 
 cursor.executemany("INSERT INTO personArticleScopusNonTargetAuthorAffiliation(personIdentifier, pmid, nonTargetAuthorInstitutionLabel, nonTargetAuthorInstitutionID, nonTargetAuthorInstitutionCount) VALUES(%s, %s, %s, %s, %s)", personArticleScopusNonTargetAuthorAffiliation)
+mydb.commit()
 f.close()
 
 #Import personArticleGrant_s3 table
@@ -661,6 +667,7 @@ for row in csv_data:
     personArticleGrant.append(tuple(row))
 
 cursor.executemany("INSERT INTO personArticleGrant(personIdentifier, pmid, articleGrant, grantMatchScore, institutionGrant) VALUES(%s, %s, %s, %s, %s)", personArticleGrant)
+mydb.commit()
 f.close()
 
 #Import personArticle_s3_mysql table
