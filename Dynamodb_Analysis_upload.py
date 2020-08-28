@@ -582,6 +582,7 @@ mydb.commit()
 f = open(outputPath + 'person.csv','r')
 csv_data = csv.reader(f)
 cursor.execute("TRUNCATE TABLE person")
+mydb.commit()
 person = []
 #Skip column headers
 next(csv_data)
@@ -595,6 +596,7 @@ f.close()
 f = open(outputPath + 'personArticleAuthor.csv','r')
 csv_data = csv.reader(f)
 cursor.execute("TRUNCATE TABLE personArticleAuthor")
+mydb.commit()
 #Skip column headers
 next(csv_data)
 personArticleAuthor = []
@@ -608,6 +610,7 @@ f.close()
 f = open(outputPath + 'personArticleRelationship.csv','r')
 csv_data = csv.reader(f)
 cursor.execute("TRUNCATE TABLE personArticleRelationship")
+mydb.commit()
 #Skip column headers
 next(csv_data)
 personArticleRelationship = []
@@ -622,6 +625,7 @@ f.close()
 f = open(outputPath + 'personArticleDepartment.csv','r')
 csv_data = csv.reader(f)
 cursor.execute("TRUNCATE TABLE personArticleDepartment")
+mydb.commit()
 #Skip column headers
 next(csv_data)
 personArticleDepartment = []
@@ -635,6 +639,7 @@ f.close()
 f = open(outputPath + 'personArticleScopusTargetAuthorAffiliation.csv','r')
 csv_data = csv.reader(f)
 cursor.execute("TRUNCATE TABLE personArticleScopusTargetAuthorAffiliation")
+mydb.commit()
 #Skip column headers
 next(csv_data)
 personArticleScopusTargetAuthorAffiliation = []
@@ -648,6 +653,7 @@ f.close()
 f = open(outputPath + 'personArticleScopusNonTargetAuthorAffiliation.csv','r')
 csv_data = csv.reader(f)
 cursor.execute("TRUNCATE TABLE personArticleScopusNonTargetAuthorAffiliation")
+mydb.commit()
 #Skip column headers
 next(csv_data)
 personArticleScopusNonTargetAuthorAffiliation = []
@@ -661,6 +667,7 @@ f.close()
 f = open(outputPath + 'personArticleGrant.csv','r')
 csv_data = csv.reader(f)
 cursor.execute("TRUNCATE TABLE personArticleGrant")
+mydb.commit()
 #Skip column headers
 next(csv_data)
 personArticleGrant = []
@@ -674,6 +681,7 @@ f.close()
 f = open(outputPath + 'personArticle_mysql.csv','r')
 csv_data = csv.reader(f, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True)
 cursor.execute("TRUNCATE TABLE personArticle")
+mydb.commit()
 #Skip column headers
 next(csv_data)
 personArticle = []
