@@ -5,6 +5,7 @@ WORKDIR /usr/src/app
 COPY requirements.txt ./
 COPY Dynamodb_Analysis_upload.py ./
 COPY S3_AnalysisOutput_upload.py ./
+COPY altmetric.py ./
 COPY run-data-import.sh ./
 COPY init.py ./
 
@@ -15,4 +16,4 @@ RUN mkdir -p AnalysisOutput
 
 RUN chmod a+x run-data-import.sh
 
-CMD [ "/bin/bash", "-c", "python3 ./Dynamodb_Analysis_upload.py && python3 ./S3_AnalysisOutput_upload.py" ]
+CMD [ "/bin/bash", "-c", "python3 ./Dynamodb_Analysis_upload.py && python3 ./S3_AnalysisOutput_upload.py && python3 ./altmetric.py" ]
