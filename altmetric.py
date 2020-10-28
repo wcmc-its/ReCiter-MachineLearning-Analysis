@@ -30,13 +30,13 @@ def truncate_altmetric(mysql_cursor):
     Args:
         mysql_cursor (CMySQLCursor): Executes an SQL query against the database.
     """
-    trucate_altmetric_query = (
+    truncate_altmetric_query = (
         """
         truncate altmetric;
         """
     )
 
-    mysql_cursor.execute(trucate_altmetric_query)
+    mysql_cursor.execute(truncate_altmetric_query)
 
 def get_altmetric_doi(mysql_cursor):
     """Gets the doi column from the altmetric table
@@ -57,8 +57,8 @@ def get_altmetric_doi(mysql_cursor):
 
     doi = list()
 
-    for record in mysql_cursor:
-        doi.append(record[0])
+    for rec in mysql_cursor:
+        doi.append(rec[0])
 
     return doi
 
@@ -89,8 +89,8 @@ def get_personArticle_doi(mysql_cursor):
 
     doi = list()
 
-    for record in mysql_cursor:
-        doi.append(record[0])
+    for rec in mysql_cursor:
+        doi.append(rec[0])
 
     return doi
 
@@ -179,177 +179,152 @@ def get_dict_value(dict_obj, *keys):
             return None
     return dict_value
 
-
-def insert_altmetric_record(api_url, mysql_db, mysql_cursor):
-    """Inserts the API record in the MySQL database table.
+def get_altmetric_record(api_url):
+    """Gets and returns API record from the altmetric URL.
 
     Args:
         api_url (string): URL of the API record.
-        mysql_db (MySQLConnection object): The MySQL database where the table resides.
-        mysql_cursor (CMySQLCursor): Executes an SQL query against the database.
 
     Returns:
-        string: Record added successfully or error message.
+        tuple: Altmetric API record.
     """
+
     altmetric_record = get_json_data(api_url)
 
     if isinstance(altmetric_record, dict):
-        # We map dictionary value to each database table. This should
+        # We map dictionary value to each table column. This should
         # allow for easy update if the database tables or API records
-        # change in the future. In that case, we should only need to
-        # update this function.
+        # change in the future.
         #
         # Because the API does not always return data for all keys,
-        # we have to check each one and assign None (NULL) for the
-        # missing values.
+        # we have to check each one with the get_dict_value function
+        # and assign None (NULL) for the missing values.
 
-        add_to_altmetric_table = (
-            """
-            INSERT INTO reciter.altmetric(
-                `doi`,
-                `pmid`,
-                `altmetric_jid`,
-                `context-all-count`,
-                `context-all-mean`,
-                `context-all-rank`,
-                `context-all-pct`,
-                `context-all-higher_than`,
-                `context-similar_age_3m-count`,
-                `context-similar_age_3m-mean`,
-                `context-similar_age_3m-rank`,
-                `context-similar_age_3m-pct`,
-                `context-similar_age_3m-higher_than`,
-                `altmetric_id`,
-                `cited_by_msm_count`,
-                `cited_by_posts_count`,
-                `cited_by_tweeters_count`,
-                `cited_by_feeds_count`,
-                `cited_by_fbwalls_count`,
-                `cited_by_rh_count`,
-                `cited_by_accounts_count`,
-                `last_updated`,
-                `score`,
-                `history-1y`,
-                `history-6m`,
-                `history-3m`,
-                `history-1m`,
-                `history-1w`,
-                `history-at`,
-                `added_on`,
-                `published_on`,
-                `readers-mendeley`
-            )
-            VALUES(
-                %s, %s, %s, %s, %s,
-                %s, %s, %s, %s, %s,
-                %s, %s, %s, %s, %s,
-                %s, %s, %s, %s, %s,
-                %s, %s, %s, %s, %s,
-                %s, %s, %s, %s, %s,
-                %s, %s
-            )
-            """
+        new_record = (get_dict_value(altmetric_record, "doi"),
+                      get_dict_value(altmetric_record, "pmid"),
+                      get_dict_value(altmetric_record, "altmetric_jid"),
+                      get_dict_value(altmetric_record, "context", "all", "count"),
+                      get_dict_value(altmetric_record, "context", "all", "mean"),
+                      get_dict_value(altmetric_record, "context", "all", "rank"),
+                      get_dict_value(altmetric_record, "context", "all", "pct"),
+                      get_dict_value(altmetric_record,
+                                    "context",
+                                    "all",
+                                    "higher_than"),
+                      get_dict_value(altmetric_record,
+                                    "context",
+                                    "similar_age_3m",
+                                    "count"),
+                      get_dict_value(altmetric_record,
+                                    "context",
+                                    "similar_age_3m",
+                                    "mean"),
+                      get_dict_value(altmetric_record,
+                                    "context",
+                                    "similar_age_3m",
+                                    "rank"),
+                      get_dict_value(altmetric_record,
+                                    "context",
+                                    "similar_age_3m",
+                                    "pct"),
+                      get_dict_value(altmetric_record,
+                                    "context",
+                                    "similar_age_3m",
+                                    "higher_than"),
+                      get_dict_value(altmetric_record, "altmetric_id"),
+                      get_dict_value(altmetric_record, "cited_by_msm_count"),
+                      get_dict_value(altmetric_record, "cited_by_posts_count"),
+                      get_dict_value(altmetric_record, "cited_by_tweeters_count"),
+                      get_dict_value(altmetric_record, "cited_by_feeds_count"),
+                      get_dict_value(altmetric_record, "cited_by_fbwalls_count"),
+                      get_dict_value(altmetric_record, "cited_by_rh_count"),
+                      get_dict_value(altmetric_record, "cited_by_accounts_count"),
+                      get_dict_value(altmetric_record, "last_updated"),
+                      get_dict_value(altmetric_record, "score"),
+                      get_dict_value(altmetric_record, "history", "1y"),
+                      get_dict_value(altmetric_record, "history", "6m"),
+                      get_dict_value(altmetric_record, "history", "3m"),
+                      get_dict_value(altmetric_record, "history", "1m"),
+                      get_dict_value(altmetric_record, "history", "1w"),
+                      get_dict_value(altmetric_record, "history", "at"),
+                      get_dict_value(altmetric_record, "added_on"),
+                      get_dict_value(altmetric_record, "published_on"),
+                      get_dict_value(altmetric_record, "readers", "mendeley"))
+
+        return new_record
+
+    return "Invalid record obtained from API URL"
+
+
+def insert_altmetric_records(mysql_db, mysql_cursor, db_records):
+    """Inserts the API record in the MySQL database table.
+
+    Args:
+        mysql_db (MySQLConnection object): The MySQL database where the table resides.
+        mysql_cursor (CMySQLCursor): Executes an SQL query against the database.
+        db_records (list): List of rows to be added to the database.
+
+    Returns:
+        string: Records added successfully or error message.
+    """
+
+    add_to_altmetric_table = (
+        """
+        INSERT INTO reciter.altmetric(
+            `doi`,
+            `pmid`,
+            `altmetric_jid`,
+            `context-all-count`,
+            `context-all-mean`,
+            `context-all-rank`,
+            `context-all-pct`,
+            `context-all-higher_than`,
+            `context-similar_age_3m-count`,
+            `context-similar_age_3m-mean`,
+            `context-similar_age_3m-rank`,
+            `context-similar_age_3m-pct`,
+            `context-similar_age_3m-higher_than`,
+            `altmetric_id`,
+            `cited_by_msm_count`,
+            `cited_by_posts_count`,
+            `cited_by_tweeters_count`,
+            `cited_by_feeds_count`,
+            `cited_by_fbwalls_count`,
+            `cited_by_rh_count`,
+            `cited_by_accounts_count`,
+            `last_updated`,
+            `score`,
+            `history-1y`,
+            `history-6m`,
+            `history-3m`,
+            `history-1m`,
+            `history-1w`,
+            `history-at`,
+            `added_on`,
+            `published_on`,
+            `readers-mendeley`
         )
+        VALUES(
+            %s, %s, %s, %s, %s,
+            %s, %s, %s, %s, %s,
+            %s, %s, %s, %s, %s,
+            %s, %s, %s, %s, %s,
+            %s, %s, %s, %s, %s,
+            %s, %s, %s, %s, %s,
+            %s, %s
+        )
+        """
+    )
 
-        try:
-            doi = get_dict_value(altmetric_record, "doi")
-            pmid = get_dict_value(altmetric_record, "pmid")
-            altmetric_jid = get_dict_value(altmetric_record, "altmetric_jid")
-            context_all_count = get_dict_value(altmetric_record, "context", "all", "count")
-            context_all_mean = get_dict_value(altmetric_record, "context", "all", "mean")
-            context_all_rank = get_dict_value(altmetric_record, "context", "all", "rank")
-            context_all_pct = get_dict_value(altmetric_record, "context", "all", "pct")
-            context_all_higher_than = get_dict_value(altmetric_record,
-                                                    "context",
-                                                    "all",
-                                                    "higher_than")
-            context_similar_age_3m_count = get_dict_value(altmetric_record,
-                                                        "context",
-                                                        "similar_age_3m",
-                                                        "count")
-            context_similar_age_3m_mean = get_dict_value(altmetric_record,
-                                                        "context",
-                                                        "similar_age_3m",
-                                                        "mean")
-            context_similar_age_3m_mean = get_dict_value(altmetric_record,
-                                                        "context",
-                                                        "similar_age_3m",
-                                                        "mean")
-            context_similar_age_3m_rank = get_dict_value(altmetric_record,
-                                                        "context",
-                                                        "similar_age_3m",
-                                                        "rank")
-            context_similar_age_3m_pct = get_dict_value(altmetric_record,
-                                                        "context",
-                                                        "similar_age_3m",
-                                                        "pct")
-            context_similar_age_3m_higher_than = get_dict_value(altmetric_record,
-                                                                "context",
-                                                                "similar_age_3m",
-                                                                "higher_than")
-            altmetric_id = get_dict_value(altmetric_record, "altmetric_id")
-            cited_by_msm_count = get_dict_value(altmetric_record, "cited_by_msm_count")
-            cited_by_posts_count = get_dict_value(altmetric_record, "cited_by_posts_count")
-            cited_by_tweeters_count = get_dict_value(altmetric_record, "cited_by_tweeters_count")
-            cited_by_feeds_count = get_dict_value(altmetric_record, "cited_by_feeds_count")
-            cited_by_fbwalls_count = get_dict_value(altmetric_record, "cited_by_fbwalls_count")
-            cited_by_rh_count = get_dict_value(altmetric_record, "cited_by_rh_count")
-            cited_by_accounts_count = get_dict_value(altmetric_record, "cited_by_accounts_count")
-            last_updated = get_dict_value(altmetric_record, "last_updated")
-            score = get_dict_value(altmetric_record, "score")
-            history_1y = get_dict_value(altmetric_record, "history", "1y")
-            history_6m = get_dict_value(altmetric_record, "history", "6m")
-            history_3m = get_dict_value(altmetric_record, "history", "3m")
-            history_1m = get_dict_value(altmetric_record, "history", "1m")
-            history_1w = get_dict_value(altmetric_record, "history", "1w")
-            history_at = get_dict_value(altmetric_record, "history", "at")
-            added_on = get_dict_value(altmetric_record, "added_on")
-            published_on = get_dict_value(altmetric_record, "published_on")
-            readers_mendeley = get_dict_value(altmetric_record, "readers", "mendeley")
+    try:
+        mysql_cursor.executemany(add_to_altmetric_table, db_records)
+        mysql_db.commit()
 
-            new_record = (doi,
-                          pmid,
-                          altmetric_jid,
-                          context_all_count,
-                          context_all_mean,
-                          context_all_rank,
-                          context_all_pct,
-                          context_all_higher_than,
-                          context_similar_age_3m_count,
-                          context_similar_age_3m_mean,
-                          context_similar_age_3m_rank,
-                          context_similar_age_3m_pct,
-                          context_similar_age_3m_higher_than,
-                          altmetric_id,
-                          cited_by_msm_count,
-                          cited_by_posts_count,
-                          cited_by_tweeters_count,
-                          cited_by_feeds_count,
-                          cited_by_fbwalls_count,
-                          cited_by_rh_count,
-                          cited_by_accounts_count,
-                          last_updated,
-                          score,
-                          history_1y,
-                          history_6m,
-                          history_3m,
-                          history_1m,
-                          history_1w,
-                          history_at,
-                          added_on,
-                          published_on,
-                          readers_mendeley)
+        print("Records successfully added to the database.")
 
-            mysql_cursor.execute(add_to_altmetric_table, new_record)
-            mysql_db.commit()
+    except pymysql.err.MySQLError as err:
+        print("Error writing the records to the database. %s" % (err))
 
-            print("Record %s added to the database." % (api_url))
-
-        except pymysql.err.MySQLError as err:
-            print("Error writing the record to the database. %s" % (err))
-
-    else:
-        print("Invalid record obtained from API URL")
 
 if __name__ == '__main__':
     DB_USERNAME = os.getenv('DB_USERNAME')
@@ -363,31 +338,42 @@ if __name__ == '__main__':
     person_article_db = connect_mysql_server(DB_USERNAME, DB_PASSWORD, DB_HOST, DB_NAME)
     person_article_cursor = person_article_db.cursor()
 
-    # Create a connection to use for inserting a record
-    # to the altmetric table. This is the API response
-    # we need to populate the altmetric table.
+    # Create a connection to use for inserting records
+    # in the altmetric table. This is the API response
+    # we need to populate in the altmetric table.
     altmetric_db = connect_mysql_server(DB_USERNAME, DB_PASSWORD, DB_HOST, DB_NAME)
     altmetric_cursor = altmetric_db.cursor()
+
     person_article_doi = get_personArticle_doi(person_article_cursor)
     altmetric_doi = get_altmetric_doi(altmetric_cursor)
 
-    # Truncate the altmetric table
-    truncate_altmetric(altmetric_cursor)
-
-    # Convert the DOI to lowercase. In some entries the DOI
+    # Convert the DOI to lowercase. In some entries the DOI is
     # capitalized and that causes problems with comparing the list.
     # the API returns lowecase, so they should be lower.
     #
     # During testing it looks like this is useful even when altmetric
     # is empty because there is duplicate data in our personArticle table,
-    # so this step drops the dubpicate records from the URL list.
+    # so this step drops the duplicate records from the URL list.
     url_doi = list_diff(map(str.lower, person_article_doi), map(str.lower, altmetric_doi))
 
     article_api_url = create_article_url(url_doi)
 
+    altmetric_records = []
+
     for url in article_api_url:
-        insert_altmetric_record(url, altmetric_db, altmetric_cursor)
+        record = get_altmetric_record(url)
+
+        if isinstance(record, tuple):
+            altmetric_records.append(record)
+            print(altmetric_records)
+
+        # Pause for 1 second to comply with
+        # Altmetric free API service.
         time.sleep(1)
+
+    # Truncate the altmetric table to remove all old records.
+    truncate_altmetric(altmetric_cursor)
+    insert_altmetric_records(altmetric_db, altmetric_cursor, altmetric_records)
 
     person_article_db.close()
     person_article_cursor.close()
