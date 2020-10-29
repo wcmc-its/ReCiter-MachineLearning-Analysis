@@ -232,7 +232,7 @@ def get_altmetric_record(api_url):
                                     "similar_age_3m",
                                     "higher_than"),
                       get_dict_value(altmetric_record, "altmetric_id"),
-                      get_dict_value(altmetric_record, "is_oa"),                      
+                      repr(get_dict_value(altmetric_record, "is_oa")),                      
                       get_dict_value(altmetric_record, "cited_by_msm_count"),
                       get_dict_value(altmetric_record, "cited_by_posts_count"),
                       get_dict_value(altmetric_record, "cited_by_tweeters_count"),
