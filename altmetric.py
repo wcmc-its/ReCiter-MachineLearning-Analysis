@@ -37,6 +37,7 @@ def truncate_altmetric(mysql_cursor):
     )
 
     mysql_cursor.execute(truncate_altmetric_query)
+    print(time.ctime() + "--" + "Existing altmetric table truncated.")
 
 def get_altmetric_doi(mysql_cursor):
     """Gets the doi column from the altmetric table
@@ -94,27 +95,6 @@ def get_personArticle_doi(mysql_cursor):
 
     return doi
 
-def list_diff(list1, list2):
-    """Finds the values in list1 that do not
-        exist in list2.
-
-    Args:
-        list1 (list): List we check against.
-        list2 (list): List with values that are duplicate in list1.
-
-    Returns:
-        list: Contains unique values.
-    """
-    return list(set(list1) - set(list2))
-
-def list_to_lowercase(list_with_uppercase):
-    """Changes every capital letter in the list with lowercase.
-
-    Args:
-        list_with_uppercase (list): List that contains capitalized letters and words.
-    """
-    map(str.lower, list_with_uppercase)
-
 def create_article_url(article_doi):
     """Create altmetric API URL by combining the base API and doi.
 
@@ -148,9 +128,9 @@ def get_json_data(api_record_url):
         json_api_data = json.loads(api_request.read().decode())
         return json_api_data
     except urllib.error.URLError as err:
-        print("%s for API record URL: %s" % (err, api_record_url))
+        print(time.ctime() + "--" + "%s--API URL: %s" % (err, api_record_url))
     except ValueError as err:
-        print("Problem parsing JSON data. Error %s" % (err))
+        print(time.ctime() + "--" + "Error parsing JSON data--Error %s" % (err))
 
 
 def get_dict_value(dict_obj, *keys):
@@ -232,7 +212,6 @@ def get_altmetric_record(api_url):
                                     "similar_age_3m",
                                     "higher_than"),
                       get_dict_value(altmetric_record, "altmetric_id"),
-                      repr(get_dict_value(altmetric_record, "is_oa")),                      
                       get_dict_value(altmetric_record, "cited_by_msm_count"),
                       get_dict_value(altmetric_record, "cited_by_posts_count"),
                       get_dict_value(altmetric_record, "cited_by_tweeters_count"),
@@ -252,6 +231,7 @@ def get_altmetric_record(api_url):
                       get_dict_value(altmetric_record, "published_on"),
                       get_dict_value(altmetric_record, "readers", "mendeley"))
 
+        print(time.ctime() + "--" + "New record created--API URL: %s" % (api_url))
         return new_record
 
     return "Invalid record obtained from API URL"
@@ -286,7 +266,6 @@ def insert_altmetric_records(mysql_db, mysql_cursor, db_records):
             `context-similar_age_3m-pct`,
             `context-similar_age_3m-higher_than`,
             `altmetric_id`,
-            `is_oa`,
             `cited_by_msm_count`,
             `cited_by_posts_count`,
             `cited_by_tweeters_count`,
@@ -313,7 +292,7 @@ def insert_altmetric_records(mysql_db, mysql_cursor, db_records):
             %s, %s, %s, %s, %s,
             %s, %s, %s, %s, %s,
             %s, %s, %s, %s, %s,
-            %s, %s, %s
+            %s, %s
         )
         """
     )
@@ -322,10 +301,11 @@ def insert_altmetric_records(mysql_db, mysql_cursor, db_records):
         mysql_cursor.executemany(add_to_altmetric_table, db_records)
         mysql_db.commit()
 
-        print("Records successfully added to the database.")
+        print(time.ctime() + "--" + "%s records successfully added to the database."
+            % (len(db_records)))
 
     except pymysql.err.MySQLError as err:
-        print("Error writing the records to the database. %s" % (err))
+        print(time.ctime() + "--" + "Error writing the records to the database. %s" % (err))
 
 
 if __name__ == '__main__':
@@ -349,14 +329,12 @@ if __name__ == '__main__':
     person_article_doi = get_personArticle_doi(person_article_cursor)
     altmetric_doi = get_altmetric_doi(altmetric_cursor)
 
-    # Convert the DOI to lowercase. In some entries the DOI is
+    # Convert the DOI column to lowercase. In some entries the DOI is
     # capitalized and that causes problems with comparing the list.
     # the API returns lowecase, so they should be lower.
-    #
-    # During testing it looks like this is useful even when altmetric
-    # is empty because there is duplicate data in our personArticle table,
-    # so this step drops the duplicate records from the URL list.
-    url_doi = list_diff(map(str.lower, person_article_doi), map(str.lower, altmetric_doi))
+    url_doi = map(str.lower, person_article_doi)
+
+    print(time.ctime() + "--" + "Processing %s URLs" % (len(person_article_doi)))
 
     article_api_url = create_article_url(url_doi)
 
@@ -367,7 +345,6 @@ if __name__ == '__main__':
 
         if isinstance(record, tuple):
             altmetric_records.append(record)
-            print(altmetric_records)
 
         # Pause for 1 second to comply with
         # Altmetric free API service.
