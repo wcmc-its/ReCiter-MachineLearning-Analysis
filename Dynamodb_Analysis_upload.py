@@ -498,7 +498,7 @@ for i in range(len(items)):
                     + str(relationshipMatchModifierMentorSeniorAuthor) + "," + str(relationshipMatchModifierManager) + "," + str(relationshipMatchModifierManagerSeniorAuthor) + "\n")
     count += 1
     print("here:", count)
-f.close()    
+f.close()  
 
 
 
@@ -569,6 +569,32 @@ for i in range(len(items)):
                 orcid = ""
     count += 1
     print("here:", count)
+f.close()
+
+
+#code for personArticleKeyword table
+#open a csv file in the directory you preferred
+f = open(outputPath + 'personArticleKeyword.csv','w')
+#write column names into file
+f.write("personIdentifier," + "pmid," + "keyword" + "\n")
+#use count to record the number of person we have finished feature extraction
+count = 0
+#extract all required nested features 
+
+for i in range(len(items)):
+    article_temp = count_articles[i][1]
+    for j in range(article_temp):
+        personIdentifier = items[i]['reCiterFeature']['personIdentifier']
+        pmid = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['pmid']
+        if 'articleKeywords' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]:
+            keywords_temp = len(items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['articleKeywords'])
+            for k in range(keywords_temp):
+                if 'keyword' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['articleKeywords'][k]:
+                    keyword = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['articleKeywords'][k]['keyword']
+                else:
+                    keyword = ""
+                f.write(str(personIdentifier) + "," + str(pmid) + "," + '"' + str(keyword) + '"' + "\n")
+            
 f.close()
 
 
@@ -682,6 +708,20 @@ for row in csv_data:
     personArticleGrant.append(tuple(row))
 
 cursor.executemany("INSERT INTO personArticleGrant(personIdentifier, pmid, articleGrant, grantMatchScore, institutionGrant) VALUES(%s, %s, %s, %s, %s)", personArticleGrant)
+f.close()
+
+#Import personArticleKeyword table
+f = open(outputPath + 'personArticleKeyword.csv','r')
+csv_data = csv.reader(f)
+cursor.execute("TRUNCATE TABLE personArticleKeyword")
+mydb.commit()
+#Skip column headers
+next(csv_data)
+personArticleKeyword = []
+for row in csv_data:
+    personArticleKeyword.append(tuple(row))
+
+cursor.executemany("INSERT INTO personArticleKeyword(personIdentifier, pmid, keyword) VALUES(%s, %s, %s)", personArticleKeyword)
 f.close()
 
 #Import personArticle_s3_mysql table

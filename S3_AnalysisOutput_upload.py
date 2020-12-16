@@ -577,6 +577,29 @@ for i in range(len(items)):
     print("here:", count)
 f.close()
 
+#code for personArticleKeyword_s3 table
+#open a csv file
+f = open(outputPath + 'personArticleKeyword_s3.csv','w')
+
+#use count to record the number of person we have finished feature extraction
+count = 0
+#extract all required nested features 
+for i in range(len(items)):
+    article_temp = len(items[i]['reCiterArticleFeatures'])
+    for j in range(article_temp):
+        personIdentifier = items[i]['personIdentifier']
+        pmid = items[i]['reCiterArticleFeatures'][j]['pmid']
+        if 'articleKeywords' in items[i]['reCiterArticleFeatures'][j]:
+            keywords_temp = len(items[i]['reCiterArticleFeatures'][j]['articleKeywords'])
+            for k in range(keywords_temp):
+                if 'keyword' in items[i]['reCiterArticleFeatures'][j]['articleKeywords'][k]:
+                    keyword = items[i]['reCiterArticleFeatures'][j]['articleKeywords'][k]['keyword']
+                else: 
+                    keyword = ""
+                f.write(str(personIdentifier) + "," + str(pmid) + "," + '"' + str(keyword) + '"' + "\n")
+            
+f.close()
+
 
 DB_HOST = os.getenv('DB_HOST')
 DB_USERNAME = os.getenv('DB_USERNAME')
@@ -591,7 +614,6 @@ mydb = MySQLdb.connect(host=DB_HOST,
 cursor = mydb.cursor()
 cursor.execute('SET autocommit = 0')
 mydb.commit()
-
 
 #Import person table
 f = open(outputPath + 'person_s3.csv','r')
@@ -668,6 +690,17 @@ for row in csv_data:
     personArticleGrant.append(tuple(row))
 
 cursor.executemany("INSERT INTO personArticleGrant(personIdentifier, pmid, articleGrant, grantMatchScore, institutionGrant) VALUES(%s, %s, %s, %s, %s)", personArticleGrant)
+mydb.commit()
+f.close()
+
+#Import personArticleKeyword table
+f = open(outputPath + 'personArticleKeyword_s3.csv','r')
+csv_data = csv.reader(f)
+personArticleKeyword = []
+for row in csv_data:
+    personArticleKeyword.append(tuple(row))
+
+cursor.executemany("INSERT INTO personArticleKeyword(personIdentifier, pmid, keyword) VALUES(%s, %s, %s)", personArticleKeyword)
 mydb.commit()
 f.close()
 
