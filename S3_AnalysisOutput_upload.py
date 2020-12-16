@@ -260,12 +260,13 @@ for i in range(len(items)):
                 issntype = items[i]['reCiterArticleFeatures'][j]['issn'][k]['issntype']
                 if issntype == 'Linking':
                     issn = items[i]['reCiterArticleFeatures'][j]['issn'][k]['issn']
+                    break
                 if issntype == 'Print':
                     issn = items[i]['reCiterArticleFeatures'][j]['issn'][k]['issn']
+                    break
                 if issntype == 'Electronic':
                     issn = items[i]['reCiterArticleFeatures'][j]['issn'][k]['issn']
-                if issntype == 'Undetermined':
-                    issn = items[i]['reCiterArticleFeatures'][j]['issn'][k]['issn'] 
+                    break
         else:
             issn = ""
 
