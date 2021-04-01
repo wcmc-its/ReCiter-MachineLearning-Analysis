@@ -63,7 +63,7 @@ print(len(no_article_person_list))
 f = open(outputPath + 'personArticle_mysql.csv','w')
 #write column names into file
 f.write("personIdentifier," + "pmid," + "pmcid," + "totalArticleScoreStandardized," + "totalArticleScoreNonStandardized," 
-        + "userAssertion," + "publicationDateDisplay," + "publicationDateStandardized," + "publicationTypeCanonical," + "publicationAbstract,"
+        + "userAssertion," + "publicationDateDisplay," + "publicationDateStandardized," + "publicationTypeCanonical,"
         + "scopusDocID," + "journalTitleVerbose," + "articleTitle," + "feedbackScoreAccepted," + "feedbackScoreRejected," + "feedbackScoreNull," 
         + "articleAuthorNameFirstName," + "articleAuthorNameLastName," + "institutionalAuthorNameFirstName," + "institutionalAuthorNameMiddleName," + "institutionalAuthorNameLastName,"
         + "nameMatchFirstScore," + "nameMatchFirstType," + "nameMatchMiddleScore," + "nameMatchMiddleType," + "nameMatchLastScore," + "nameMatchLastType," + "nameMatchModifierScore," + "nameScoreTotal,"
@@ -233,14 +233,16 @@ for i in range(len(items)):
         else:
             countArticlesRetrieved, articleCountScore = 0, 0
         
-        if 'pubmedTargetAuthorAffiliation' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']:
+        if 'affiliationEvidence' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence'] and \
+            'pubmedTargetAuthorAffiliation' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']:
             targetAuthorInstitutionalAffiliationArticlePubmedLabel = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['pubmedTargetAuthorAffiliation']['targetAuthorInstitutionalAffiliationArticlePubmedLabel']
             targetAuthorInstitutionalAffiliationArticlePubmedLabel = targetAuthorInstitutionalAffiliationArticlePubmedLabel.replace('"', '""')
             pubmedTargetAuthorInstitutionalAffiliationMatchTypeScore = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['pubmedTargetAuthorAffiliation']['targetAuthorInstitutionalAffiliationMatchTypeScore']
         else:
             targetAuthorInstitutionalAffiliationArticlePubmedLabel, pubmedTargetAuthorInstitutionalAffiliationMatchTypeScore = "", 0
-        
-        if 'scopusNonTargetAuthorAffiliation' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']:
+
+        if 'affiliationEvidence' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence'] and \
+            'scopusNonTargetAuthorAffiliation' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']:
             scopusNonTargetAuthorInstitutionalAffiliationSource = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusNonTargetAuthorAffiliation']['nonTargetAuthorInstitutionalAffiliationSource']
             scopusNonTargetAuthorInstitutionalAffiliationScore = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusNonTargetAuthorAffiliation']['nonTargetAuthorInstitutionalAffiliationScore']
         else:
@@ -253,8 +255,8 @@ for i in range(len(items)):
             clusterScoreModificationOfTotalScore = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['averageClusteringEvidence']['clusterScoreModificationOfTotalScore']
         else:
             totalArticleScoreWithoutClustering, clusterScoreAverage, clusterReliabilityScore, clusterScoreModificationOfTotalScore = "", "", "", ""
-
-        if 'clusterIdentifier' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['averageClusteringEvidence']:
+        if 'averageClusteringEvidence' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence'] and \
+            'clusterIdentifier' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['averageClusteringEvidence']:
             clusterIdentifier = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['averageClusteringEvidence']['clusterIdentifier']
         else :
             clusterIdentifier = 0
@@ -368,20 +370,21 @@ count = 0
 for i in range(len(items)):
     article_temp = count_articles[i][1]
     for j in range(article_temp):
-        if 'scopusNonTargetAuthorAffiliation' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']:
-            if 'nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusNonTargetAuthorAffiliation']:
-                scopusNonTargetAuthorAffiliation_temp = len(items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusNonTargetAuthorAffiliation']['nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution'])
-        
-                for k in range(scopusNonTargetAuthorAffiliation_temp):
-                    personIdentifier = items[i]['reCiterFeature']['personIdentifier']
-                    pmid = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['pmid']
-                    nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusNonTargetAuthorAffiliation']['nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution'][k]
-                    #since the nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution field contains more than one featureseparated by comma, and string feature contains comma, we need to disdinguish between this two by the following code
-                    count_comma = nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution.count(',')
-                    comma_difference = count_comma - 2
-                    if comma_difference != 0:
-                        nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution = nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution.replace(",", ".", comma_difference)
-                    f.write(str(personIdentifier) + "," + str(pmid) + "," + str(nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution) + "\n")
+        if 'affiliationEvidence' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence'] and \
+        'scopusNonTargetAuthorAffiliation' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence'] and \
+        'nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusNonTargetAuthorAffiliation']:
+            scopusNonTargetAuthorAffiliation_temp = len(items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusNonTargetAuthorAffiliation']['nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution'])
+    
+            for k in range(scopusNonTargetAuthorAffiliation_temp):
+                personIdentifier = items[i]['reCiterFeature']['personIdentifier']
+                pmid = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['pmid']
+                nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusNonTargetAuthorAffiliation']['nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution'][k]
+                #since the nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution field contains more than one featureseparated by comma, and string feature contains comma, we need to disdinguish between this two by the following code
+                count_comma = nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution.count(',')
+                comma_difference = count_comma - 2
+                if comma_difference != 0:
+                    nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution = nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution.replace(",", ".", comma_difference)
+                f.write(str(personIdentifier) + "," + str(pmid) + "," + str(nonTargetAuthorInstitutionalAffiliationMatchKnownInstitution) + "\n")
     count += 1
     print("here:", count)
 f.close()
@@ -397,7 +400,7 @@ count = 0
 for i in range(len(items)):
     article_temp = count_articles[i][1]
     for j in range(article_temp):
-        if 'scopusTargetAuthorAffiliation' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']:
+        if 'affiliationEvidence' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence'] and 'scopusTargetAuthorAffiliation' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']:
             scopusTargetAuthorAffiliation_temp = len(items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['affiliationEvidence']['scopusTargetAuthorAffiliation'])
         
             for k in range(scopusTargetAuthorAffiliation_temp):
