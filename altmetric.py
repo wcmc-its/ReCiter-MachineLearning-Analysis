@@ -80,6 +80,7 @@ def get_personArticle_doi(mysql_cursor):
             datePublicationAddedToEntrez
         from reciter.personArticle
             where userAssertion = 'ACCEPTED'
+                and doi is not null
                 and round((UNIX_TIMESTAMP() - UNIX_TIMESTAMP(
                                                 STR_TO_DATE(datePublicationAddedToEntrez,
                                                     '%Y-%m-%d'))) / (60*60*24),0)  < 730
