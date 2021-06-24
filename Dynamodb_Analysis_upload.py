@@ -142,11 +142,14 @@ for i in range(len(items)):
                 institutionalAuthorName_middleName = ""
             institutionalAuthorName_lastName = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['institutionalAuthorName']['lastName']
             nameMatchFirstScore = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameMatchFirstScore']
-            nameMatchFirstType = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameMatchFirstType']
+            if 'nameMatchFirstType' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']:
+                nameMatchFirstType = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameMatchFirstType']
             nameMatchMiddleScore = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameMatchMiddleScore']
-            nameMatchMiddleType = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameMatchMiddleType']
+            if 'nameMatchMiddleType' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']:
+                nameMatchMiddleType = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameMatchMiddleType']
             nameMatchLastScore = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameMatchLastScore']
-            nameMatchLastType = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameMatchLastType']
+            if 'nameMatchLastType' in items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']:
+                nameMatchLastType = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameMatchLastType']
             nameMatchModifierScore = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameMatchModifierScore']
             nameScoreTotal = items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['evidence']['authorNameEvidence']['nameScoreTotal']
         else:
