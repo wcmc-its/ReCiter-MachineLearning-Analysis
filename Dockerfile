@@ -16,4 +16,4 @@ RUN mkdir -p AnalysisOutput
 
 RUN chmod a+x run-data-import.sh
 
-CMD [ "/bin/bash", "-c", "python3 ./Dynamodb_Analysis_upload.py && python3 ./S3_AnalysisOutput_upload.py && python3 ./altmetric.py" ]
+CMD [ "/bin/bash", "-c", "python3 ./Dynamodb_Analysis_upload.py && python3 ./S3_AnalysisOutput_upload.py && python3 ./nih_rcr.py && python3 ./altmetric.py" ]
