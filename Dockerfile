@@ -5,6 +5,7 @@ WORKDIR /usr/src/app
 COPY requirements.txt ./
 COPY Dynamodb_Analysis_upload.py ./
 COPY S3_AnalysisOutput_upload.py ./
+COPY nih_rcr.py ./
 COPY altmetric.py ./
 COPY run-data-import.sh ./
 COPY init.py ./
