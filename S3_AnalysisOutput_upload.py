@@ -26,7 +26,7 @@ outputPath = '/usr/src/app/ReCiter/'
 #get all filename(i.e. personIdentifier) in the folder
 originalDataPath = '/usr/src/app/AnalysisOutput/' #need to modify based on your local directory
 
-downloadDirectoryFroms3('reciter-dynamodb', 'AnalysisOutput')
+downloadDirectoryFroms3(os.getenv('S3_BUCKET_NAME'), 'AnalysisOutput')
 
 person_list = []
 for filename in os.listdir(originalDataPath):
