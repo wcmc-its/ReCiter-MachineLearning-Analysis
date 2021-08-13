@@ -8,6 +8,8 @@ COPY S3_AnalysisOutput_upload.py ./
 COPY nih_rcr.py ./
 COPY altmetric.py ./
 COPY run-data-import.sh ./
+COPY reciterAnalysis.sql ./
+COPY reciter_create_table.py ./
 COPY init.py ./
 
 RUN pip3 install --no-cache-dir -r requirements.txt

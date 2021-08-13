@@ -1,7 +1,7 @@
 import time
 import os
 import pymysql.cursors
-import pymysql.err 
+import pymysql.err
  
 import datetime, time 
  
@@ -10,13 +10,16 @@ def run_sql_file(filename, connection):
     The function takes a filename and a connection as input 
     and will run the SQL query on the given connection   
     ''' 
+    MYSQL_OPTION_MULTI_STATEMENTS_ON = 0
     start = time.time() 
-     
-    file = open(filename, 'r') 
-    sql = s = " ".join(file.readlines()) 
-    print("Start executing: " + filename + " at " + str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) + "\n" + sql ) 
+    print("Start executing: " + filename + " at " + str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))) 
     cursor = connection.cursor() 
-    cursor.execute(sql)     
+    with open(filename, encoding="utf-8") as f:
+        commands = f.read().split(';')
+
+    for command in commands:
+        cursor.execute(command)
+        print(command)     
     connection.commit() 
      
     end = time.time() 
