@@ -10,15 +10,26 @@ DROP TABLE IF EXISTS `personArticleKeyword`;
 CREATE TABLE IF NOT EXISTS `person` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `personIdentifier` varchar(128) DEFAULT NULL,
-  `dateAdded` varchar(128) DEFAULT NULL,
+  `firstName` varchar(128) DEFAULT NULL,
+  `middleName` varchar(128) DEFAULT NULL,
+  `lastName` varchar(128) DEFAULT NULL,
+  `title` varchar(200) DEFAULT NULL,
+  `primaryOrganizationalUnit` varchar(200) DEFAULT NULL,
+  `primaryInstitution` varchar(200) DEFAULT NULL,
+  `dateAdded` varchar(200) DEFAULT NULL,
   `dateUpdated` varchar(128) DEFAULT NULL,
   `precision` float DEFAULT 0,
   `recall` float DEFAULT 0,
   `countSuggestedArticles` int(11) DEFAULT 0,
+  `countPendingArticles` int(11) DEFAULT 0,
   `overallAccuracy` float DEFAULT 0,
   `mode` varchar(128) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `idx_personIdentifier` (`personIdentifier`) USING BTREE,
+  KEY `idx_primaryInstitution` (`primaryInstitution`) USING BTREE,
+  KEY `idx_primaryOrganizationalUnit` (`primaryOrganizationalUnit`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE IF NOT EXISTS `personArticle` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `personIdentifier` varchar(128) DEFAULT NULL,
