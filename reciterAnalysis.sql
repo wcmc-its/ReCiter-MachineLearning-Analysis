@@ -29,7 +29,14 @@ CREATE TABLE IF NOT EXISTS `person` (
   KEY `idx_primaryInstitution` (`primaryInstitution`) USING BTREE,
   KEY `idx_primaryOrganizationalUnit` (`primaryOrganizationalUnit`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
-
+CREATE TABLE IF NOT EXISTS `personPersonType` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `personIdentifier` varchar(128) DEFAULT NULL,
+  `personType` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_personIdentifier` (`personIdentifier`) USING BTREE,
+  KEY `idx_personType` (`personType`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 CREATE TABLE IF NOT EXISTS `personArticle` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `personIdentifier` varchar(128) DEFAULT NULL,
