@@ -10,7 +10,7 @@ import os
 
 dynamodb = boto3.resource('dynamodb')
 
-def scan_table(table_name): #runtime: about 15min
+def scan_table(table_name, is_filter_expression): #runtime: about 15min
     #record time for scan the entire table
     print(dynamodb)
     start = time.time()
@@ -26,11 +26,17 @@ def scan_table(table_name): #runtime: about 15min
     while True:
         print(len(response['Items']))
         if response.get('LastEvaluatedKey'):
-            response = table.scan(
-                ExclusiveStartKey = response['LastEvaluatedKey'],
-                FilterExpression = Attr('usingS3').eq(0)
-                )
-            items += response['Items']
+            if is_filter_expression: 
+                response = table.scan(
+                    ExclusiveStartKey = response['LastEvaluatedKey'],
+                    FilterExpression = Attr('usingS3').eq(0)
+                    )
+                items += response['Items']
+            else:
+                response = table.scan(
+                    ExclusiveStartKey = response['LastEvaluatedKey']
+                    )
+                items += response['Items']
         else:           
             break
     print('execution time:', time.time() - start)
@@ -39,10 +45,9 @@ def scan_table(table_name): #runtime: about 15min
 
 outputPath = '/usr/src/app/ReCiter/'
 
-#call scan_table function
-items = scan_table('Analysis')
-print("Count Items from DynamoDB:", len(items)) 
-
+#call scan_table function for analysis
+items = scan_table('Analysis', True)
+print("Count Items from DynamoDB Analysis table:", len(items)) 
 
 #use a list to store (personIdentifier, number of articles for this person)
 count_articles = []
@@ -54,7 +59,6 @@ for i in items:
         no_article_person_list.append(i['reCiterFeature']['personIdentifier'])
 print("Count Items from count_articles list:", len(count_articles))
 print(len(no_article_person_list))
-
 
 
 
@@ -504,13 +508,13 @@ for i in range(len(items)):
                     + str(relationshipMatchModifierMentorSeniorAuthor) + "," + str(relationshipMatchModifierManager) + "," + str(relationshipMatchModifierManagerSeniorAuthor) + "\n")
     count += 1
     print("here:", count)
-f.close()  
+f.close() 
 
 
 
 #code for person table
 f = open(outputPath + 'person.csv','w')
-f.write("personIdentifier," + "dateAdded," + "dateUpdated," + "precision," + "recall," + "countSuggestedArticles," + "overallAccuracy," + "mode" + "\n")
+f.write("personIdentifier," + "dateAdded," + "dateUpdated," + "precision," + "recall," + "countSuggestedArticles," + "countPendingArticles," + "overallAccuracy," + "mode" + "\n")
 
 count = 0
 for i in range(len(items)):
@@ -520,12 +524,16 @@ for i in range(len(items)):
     precision = items[i]['reCiterFeature']['precision']
     recall = items[i]['reCiterFeature']['recall']
     countSuggestedArticles = items[i]['reCiterFeature']['countSuggestedArticles']
+    if 'countPendingArticles' in items[i]['reCiterFeature']:
+        countPendingArticles = items[i]['reCiterFeature']['countPendingArticles']
+    else:
+        countPendingArticles = 0
     overallAccuracy = items[i]['reCiterFeature']['overallAccuracy']
     mode = items[i]['reCiterFeature']['mode']
     
     f.write(str(personIdentifier) + "," + str(dateAdded) + "," + str(dateUpdated) + "," 
                 + str(precision) + "," + str(recall) + "," 
-                + str(countSuggestedArticles) + "," + str(overallAccuracy) + "," + str(mode) + "\n")
+                + str(countSuggestedArticles) + "," + str(countPendingArticles) + "," + str(overallAccuracy) + "," + str(mode) + "\n")
     count += 1
     print("here:", count)
 f.close()
@@ -628,8 +636,9 @@ next(csv_data)
 for row in csv_data:
     person.append(tuple(row))
     
-cursor.executemany("INSERT INTO person(personIdentifier, dateAdded, dateUpdated, `precision`, recall, countSuggestedArticles, overallAccuracy, mode) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)", person)
+cursor.executemany("INSERT INTO person(personIdentifier, dateAdded, dateUpdated, `precision`, recall, countSuggestedArticles, countPendingArticles, overallAccuracy, mode) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)", person)
 f.close()
+mydb.commit()
 
 #Import personArticleAuthor_s3 table
 f = open(outputPath + 'personArticleAuthor.csv','r')
@@ -742,9 +751,10 @@ for row in csv_data:
     personArticle.append(tuple(row))
 
 cursor.executemany("INSERT INTO personArticle(personIdentifier, pmid, pmcid, totalArticleScoreStandardized, totalArticleScoreNonStandardized, userAssertion, publicationDateDisplay, publicationDateStandardized, publicationTypeCanonical, scopusDocID, journalTitleVerbose, articleTitle, feedbackScoreAccepted, feedbackScoreRejected, feedbackScoreNull, articleAuthorNameFirstName, articleAuthorNameLastName, institutionalAuthorNameFirstName, institutionalAuthorNameMiddleName, institutionalAuthorNameLastName, nameMatchFirstScore, nameMatchFirstType, nameMatchMiddleScore, nameMatchMiddleType, nameMatchLastScore, nameMatchLastType, nameMatchModifierScore, nameScoreTotal, emailMatch, emailMatchScore, journalSubfieldScienceMetrixLabel, journalSubfieldScienceMetrixID, journalSubfieldDepartment, journalSubfieldScore, relationshipEvidenceTotalScore, relationshipMinimumTotalScore, relationshipNonMatchCount, relationshipNonMatchScore, articleYear, identityBachelorYear, discrepancyDegreeYearBachelor, discrepancyDegreeYearBachelorScore, identityDoctoralYear, discrepancyDegreeYearDoctoral, discrepancyDegreeYearDoctoralScore, genderScoreArticle, genderScoreIdentity, genderScoreIdentityArticleDiscrepancy, personType, personTypeScore, countArticlesRetrieved, articleCountScore, targetAuthorInstitutionalAffiliationArticlePubmedLabel, pubmedTargetAuthorInstitutionalAffiliationMatchTypeScore, scopusNonTargetAuthorInstitutionalAffiliationSource, scopusNonTargetAuthorInstitutionalAffiliationScore, totalArticleScoreWithoutClustering, clusterScoreAverage, clusterReliabilityScore, clusterScoreModificationOfTotalScore, datePublicationAddedToEntrez, clusterIdentifier, doi, issn, issue, journalTitleISOabbreviation, pages, timesCited, volume) VALUES(%s, %s, NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''))",
- personArticle)
+ personArticle) 
+f.close()
 
 #close the connection to the database.
 mydb.commit()
 cursor.close()
-f.close() 
+

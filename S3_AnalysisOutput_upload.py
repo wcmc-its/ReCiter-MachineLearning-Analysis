@@ -1,4 +1,5 @@
 import json
+from boto3.dynamodb.conditions import Key, Attr
 import time
 import os
 import csv
@@ -7,6 +8,8 @@ import MySQLdb
 
 import boto3
 import os
+
+dynamodb = boto3.resource('dynamodb')
 
 def downloadDirectoryFroms3(bucketName,remoteDirectoryName):
     s3_resource = boto3.resource('s3')
@@ -21,10 +24,38 @@ def downloadDirectoryFroms3(bucketName,remoteDirectoryName):
             os.makedirs(os.path.dirname(object.key))
         bucket.download_file(object.key,object.key)
 
+def scan_table(table_name): #runtime: about 15min
+    #record time for scan the entire table
+    print(dynamodb)
+    start = time.time()
+    table = dynamodb.Table(table_name)
+
+    response = table.scan()
+
+    items = response['Items']
+
+    #continue to gat all records in the table, using ExclusiveStartKey
+    while True:
+        print(len(response['Items']))
+        if response.get('LastEvaluatedKey'):
+            response = table.scan(
+                ExclusiveStartKey = response['LastEvaluatedKey']
+                )
+            items += response['Items']
+        else:           
+            break
+    print('execution time:', time.time() - start)
+    
+    return items
+
 outputPath = '/usr/src/app/ReCiter/'
 
 #get all filename(i.e. personIdentifier) in the folder
 originalDataPath = '/usr/src/app/AnalysisOutput/' #need to modify based on your local directory
+
+#call scan_table function for analysis
+identities = scan_table('Identity')
+print("Count Items from DynamoDB Identity table:", len(identities)) 
 
 downloadDirectoryFroms3(os.getenv('S3_BUCKET_NAME'), 'AnalysisOutput')
 
@@ -555,7 +586,7 @@ for i in range(len(items)):
     count += 1
     print("here:", count)
 f.close()
-print(no_reCiterArticleAuthorFeatures_list)
+print(no_reCiterArticleAuthorFeatures_list) 
 
 
 
@@ -570,12 +601,16 @@ for i in range(len(items)):
     precision = items[i]['precision']
     recall = items[i]['recall']
     countSuggestedArticles = items[i]['countSuggestedArticles']
+    if 'countPendingArticles' in items[i]:
+        countPendingArticles = items[i]['countPendingArticles']
+    else:
+        countPendingArticles = 0
     overallAccuracy = items[i]['overallAccuracy']
     mode = items[i]['mode']
 
     f.write(str(personIdentifier) + "," + str(dateAdded) + "," + str(dateUpdated) + "," 
                 + str(precision) + "," + str(recall) + "," 
-                + str(countSuggestedArticles) + "," + str(overallAccuracy) + "," + str(mode) + "\n")
+                + str(countSuggestedArticles) + "," + str(countPendingArticles) + "," +  str(overallAccuracy) + "," + str(mode) + "\n")
     count += 1
     print("here:", count)
 f.close()
@@ -625,9 +660,64 @@ person = []
 for row in csv_data:
     person.append(tuple(row))
     
-cursor.executemany("INSERT INTO person(personIdentifier, dateAdded, dateUpdated, `precision`, recall, countSuggestedArticles, overallAccuracy, mode) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)", person)
+cursor.executemany("INSERT INTO person(personIdentifier, dateAdded, dateUpdated, `precision`, recall, countSuggestedArticles, countPendingArticles, overallAccuracy, mode) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)", person)
 mydb.commit()
 f.close()
+
+#Update person table with information from Identity table
+cursor.execute("TRUNCATE TABLE personPersonType")
+mydb.commit()
+
+# prepare query and data
+query = """ UPDATE person
+                SET title = %s,
+                    firstName = %s,
+                    middleName = %s,
+                    lastName = %s,
+                    primaryOrganizationalUnit = %s,
+                    primaryInstitution = %s
+                WHERE personIdentifier = %s """
+
+for i in range(len(identities)):
+    if 'uid' in identities[i]:
+        personIdentifier = identities[i]['uid']
+    if 'title' in identities[i]['identity']:
+        title = identities[i]['identity']['title']
+    else:
+        title = ''
+    if 'firstName' in identities[i]['identity']['primaryName']:
+        firstName = identities[i]['identity']['primaryName']['firstName']
+    else:
+        firstName = ''
+    if 'middleName' in identities[i]['identity']['primaryName']:
+        middleName = identities[i]['identity']['primaryName']['middleName']
+    else:
+        middleName = ''
+    if 'lastName' in identities[i]['identity']['primaryName']:
+        lastName = identities[i]['identity']['primaryName']['lastName']
+    else:
+        lastName = ''
+    if 'primaryOrganizationalUnit' in identities[i]['identity']:
+        primaryOrganizationalUnit = identities[i]['identity']['primaryOrganizationalUnit']
+    else:
+        primaryOrganizationalUnit = ''
+    if 'primaryInstitution' in identities[i]['identity']:
+        primaryInstitution = identities[i]['identity']['primaryInstitution']
+    else:
+        primaryInstitution = ''
+    if 'personTypes' in identities[i]['identity']:
+        personType = identities[i]['identity']['personTypes']
+    else:
+        personType = ''
+    
+
+    personTypes = []
+    for j in range(len(personType)):
+        data = (personIdentifier,personType[j])
+        personTypes.append(data)
+    data = (title, firstName, middleName, lastName, primaryOrganizationalUnit, primaryInstitution, personIdentifier)
+    cursor.execute(query, data)
+    cursor.executemany('INSERT IGNORE into personPersonType(personIdentifier, personType) VALUES(%s, %s)', personTypes)
 
 #Import personArticleAuthor_s3 table
 f = open(outputPath + 'personArticleAuthor_s3.csv','r')
@@ -715,9 +805,10 @@ for row in csv_data:
     personArticle.append(tuple(row))
 
 cursor.executemany("INSERT INTO personArticle(personIdentifier, pmid, pmcid, totalArticleScoreStandardized, totalArticleScoreNonStandardized, userAssertion, publicationDateDisplay, publicationDateStandardized, publicationTypeCanonical, scopusDocID, journalTitleVerbose, articleTitle, feedbackScoreAccepted, feedbackScoreRejected, feedbackScoreNull, articleAuthorNameFirstName, articleAuthorNameLastName, institutionalAuthorNameFirstName, institutionalAuthorNameMiddleName, institutionalAuthorNameLastName, nameMatchFirstScore, nameMatchFirstType, nameMatchMiddleScore, nameMatchMiddleType, nameMatchLastScore, nameMatchLastType, nameMatchModifierScore, nameScoreTotal, emailMatch, emailMatchScore, journalSubfieldScienceMetrixLabel, journalSubfieldScienceMetrixID, journalSubfieldDepartment, journalSubfieldScore, relationshipEvidenceTotalScore, relationshipMinimumTotalScore, relationshipNonMatchCount, relationshipNonMatchScore, articleYear, identityBachelorYear, discrepancyDegreeYearBachelor, discrepancyDegreeYearBachelorScore, identityDoctoralYear, discrepancyDegreeYearDoctoral, discrepancyDegreeYearDoctoralScore, genderScoreArticle, genderScoreIdentity, genderScoreIdentityArticleDiscrepancy, personType, personTypeScore, countArticlesRetrieved, articleCountScore, targetAuthorInstitutionalAffiliationArticlePubmedLabel, pubmedTargetAuthorInstitutionalAffiliationMatchTypeScore, scopusNonTargetAuthorInstitutionalAffiliationSource, scopusNonTargetAuthorInstitutionalAffiliationScore, totalArticleScoreWithoutClustering, clusterScoreAverage, clusterReliabilityScore, clusterScoreModificationOfTotalScore, datePublicationAddedToEntrez, clusterIdentifier, doi, issn, issue, journalTitleISOabbreviation, pages, timesCited, volume) VALUES(%s, %s, NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''), NULLIF(%s,''))",
- personArticle)
+ personArticle) 
+f.close()
 
 #close the connection to the database.
 mydb.commit()
 cursor.close()
-f.close() 
+ 
