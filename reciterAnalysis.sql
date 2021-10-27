@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `person` (
   `countPendingArticles` int(11) DEFAULT 0,
   `overallAccuracy` float DEFAULT 0,
   `mode` varchar(128) DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`,`personIdentifier`),
   KEY `idx_personIdentifier` (`personIdentifier`) USING BTREE,
   KEY `idx_primaryInstitution` (`primaryInstitution`) USING BTREE,
   KEY `idx_primaryOrganizationalUnit` (`primaryOrganizationalUnit`) USING BTREE
