@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS `personArticleAuthor`;
 DROP TABLE IF EXISTS `personArticle`;
 DROP TABLE IF EXISTS `person`;
 DROP TABLE IF EXISTS `personArticleKeyword`;
-CREATE TABLE `person` (
+CREATE TABLE IF NOT EXISTS `person` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `personIdentifier` varchar(128) NOT NULL,
   `firstName` varchar(128) DEFAULT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE `person` (
   PRIMARY KEY (`id`,`personIdentifier`),
   KEY `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
-CREATE TABLE `personPersonType` (
+CREATE TABLE IF NOT EXISTS `personPersonType` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `personIdentifier` varchar(128) DEFAULT NULL,
   `personType` varchar(128) DEFAULT NULL,
