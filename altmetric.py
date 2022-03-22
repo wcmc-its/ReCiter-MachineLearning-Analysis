@@ -1,9 +1,11 @@
 import json
-import urllib.request
-import time
 import os
+import time
+import urllib.request
+
 import pymysql.cursors
 import pymysql.err
+
 
 def connect_mysql_server(username, db_password, db_hostname, database_name):
     """Establish a connection to MySQL or MariaDB server. This function is
@@ -50,7 +52,7 @@ def get_altmetric_doi(mysql_cursor):
     """
     get_metadata_query = (
         """
-        SELECT doi FROM reciter.altmetric
+        SELECT doi FROM """ + DB_NAME + """.altmetric
         """
     )
 
@@ -78,7 +80,7 @@ def get_personArticle_doi(mysql_cursor):
             doi,
             pmid,
             datePublicationAddedToEntrez
-        from reciter.personArticle
+        from """ + DB_NAME + """.personArticle
             where userAssertion = 'ACCEPTED'
                 and doi is not null
                 and round((UNIX_TIMESTAMP() - UNIX_TIMESTAMP(
@@ -252,7 +254,7 @@ def insert_altmetric_records(mysql_db, mysql_cursor, db_records):
 
     add_to_altmetric_table = (
         """
-        INSERT INTO reciter.altmetric(
+        INSERT INTO """ + DB_NAME + """.altmetric(
             `doi`,
             `pmid`,
             `altmetric_jid`,

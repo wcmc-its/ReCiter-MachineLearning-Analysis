@@ -1,7 +1,8 @@
 import json
-import urllib.request
-import time
 import os
+import time
+import urllib.request
+
 import pymysql.cursors
 import pymysql.err
 
@@ -39,7 +40,7 @@ def connect_mysql_server(username, db_password, db_hostname, database_name):
 
 def get_personarticle_pmid(mysql_cursor):
     """Looks up a list to PMIDs from the
-       reciter.personArticle table
+       """ + DB_NAME + """.personArticle table
 
     Args:
         mysql_cursor (CMySQLCursor): Executes an SQL query against the database.
@@ -51,7 +52,7 @@ def get_personarticle_pmid(mysql_cursor):
         """
         SELECT distinct
             CAST(pmid as char) as pmid
-        FROM reciter.personArticle
+        FROM """ + DB_NAME + """.personArticle
         WHERE userAssertion = 'ACCEPTED'
         """
     )
@@ -264,7 +265,7 @@ def insert_analysis_rcr(mysql_db, mysql_cursor, db_records):
 
     add_to_rcr_table = (
         """
-        INSERT INTO reciter.analysis_rcr(
+        INSERT INTO """ + DB_NAME + """.analysis_rcr(
            `pmid`,
            `year`,
            `is_research_article`,
@@ -318,7 +319,7 @@ def insert_analysis_rcr_cites(mysql_db, mysql_cursor, db_records):
 
     add_to_rcr_table = (
         """
-        INSERT INTO reciter.analysis_rcr_cites(
+        INSERT INTO """ + DB_NAME + """.analysis_rcr_cites(
            `citing_pmid`,
            `cited_pmid`
         )
@@ -353,7 +354,7 @@ def insert_analysis_rcr_cites_clin(mysql_db, mysql_cursor, db_records):
 
     add_to_rcr_table = (
         """
-        INSERT INTO reciter.analysis_rcr_cites_clin(
+        INSERT INTO """ + DB_NAME + """.analysis_rcr_cites_clin(
            `citing_pmid`,
            `cited_pmid`
         )
