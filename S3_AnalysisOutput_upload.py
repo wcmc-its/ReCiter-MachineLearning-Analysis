@@ -674,6 +674,7 @@ query = """ UPDATE person
                     firstName = %s,
                     middleName = %s,
                     lastName = %s,
+                    primaryEmail = %s,                    
                     primaryOrganizationalUnit = %s,
                     primaryInstitution = %s
                 WHERE personIdentifier = %s """
@@ -697,6 +698,10 @@ for i in range(len(identities)):
         lastName = identities[i]['identity']['primaryName']['lastName']
     else:
         lastName = ''
+    if 'primaryEmail' in identities[i]['identity']:
+        primaryEmail = identities[i]['identity']['primaryEmail']
+    else:
+        primaryEmail = ''        
     if 'primaryOrganizationalUnit' in identities[i]['identity']:
         primaryOrganizationalUnit = identities[i]['identity']['primaryOrganizationalUnit']
     else:
@@ -715,7 +720,7 @@ for i in range(len(identities)):
     for j in range(len(personType)):
         data = (personIdentifier,personType[j])
         personTypes.append(data)
-    data = (title, firstName, middleName, lastName, primaryOrganizationalUnit, primaryInstitution, personIdentifier)
+    data = (title, firstName, middleName, lastName, primaryEmail, primaryOrganizationalUnit, primaryInstitution, personIdentifier)
     cursor.execute(query, data)
     cursor.executemany('INSERT IGNORE into personPersonType(personIdentifier, personType) VALUES(%s, %s)', personTypes)
 
