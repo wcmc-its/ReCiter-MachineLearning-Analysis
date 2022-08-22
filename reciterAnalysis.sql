@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS `person` (
   `middleName` varchar(128) DEFAULT NULL,
   `lastName` varchar(128) DEFAULT NULL,
   `title` varchar(200) DEFAULT NULL,
+  `primaryEmail` varchar(200) DEFAULT NULL,
   `primaryOrganizationalUnit` varchar(200) DEFAULT NULL,
   `primaryInstitution` varchar(200) DEFAULT NULL,
   `dateAdded` varchar(200) DEFAULT NULL,
