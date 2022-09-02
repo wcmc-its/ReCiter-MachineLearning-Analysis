@@ -64,7 +64,7 @@ print(len(no_article_person_list))
 
 #code for personArticle table
 #open a csv file in the directory you preferred
-f = open(outputPath + 'personArticle_mysql.csv','w')
+f = open(outputPath + 'personArticle_mysql.csv','w', encoding='utf-8')
 #write column names into file
 f.write("personIdentifier," + "pmid," + "pmcid," + "totalArticleScoreStandardized," + "totalArticleScoreNonStandardized," 
         + "userAssertion," + "publicationDateDisplay," + "publicationDateStandardized," + "publicationTypeCanonical,"
@@ -344,7 +344,7 @@ f.close()
 
 #### The logic of all parts below is similar to the first part, please refer to the first part for explaination ####
 #code for personArticleGrant table
-f = open(outputPath + 'personArticleGrant.csv','w')
+f = open(outputPath + 'personArticleGrant.csv','w', encoding='utf-8')
 f.write("personIdentifier," + "pmid," + "articleGrant," + "grantMatchScore," + "institutionGrant" + "\n")
 
 count = 0
@@ -370,7 +370,7 @@ f.close()
 
 
 #code for personArticleScopusNonTargetAuthorAffiliation table
-f = open(outputPath + 'personArticleScopusNonTargetAuthorAffiliation.csv','w')
+f = open(outputPath + 'personArticleScopusNonTargetAuthorAffiliation.csv','w', encoding='utf-8')
 f.write("personIdentifier," + "pmid," + "nonTargetAuthorInstitutionLabel," + "nonTargetAuthorInstitutionID," + "nonTargetAuthorInstitutionCount" + "\n")
 
 count = 0
@@ -399,7 +399,7 @@ f.close()
 
 
 #code for personArticleScopusTargetAuthorAffiliation table
-f = open(outputPath + 'personArticleScopusTargetAuthorAffiliation.csv','w')
+f = open(outputPath + 'personArticleScopusTargetAuthorAffiliation.csv','w', encoding='utf-8')
 f.write("personIdentifier," + "pmid," + "targetAuthorInstitutionalAffiliationSource," + "scopusTargetAuthorInstitutionalAffiliationIdentity," + "targetAuthorInstitutionalAffiliationArticleScopusLabel,"
         + "targetAuthorInstitutionalAffiliationArticleScopusAffiliationId," + "targetAuthorInstitutionalAffiliationMatchType," + "targetAuthorInstitutionalAffiliationMatchTypeScore" + "\n")
 
@@ -436,7 +436,7 @@ f.close()
 
 
 #code for personArticleDepartment table
-f = open(outputPath + 'personArticleDepartment.csv','w')
+f = open(outputPath + 'personArticleDepartment.csv','w', encoding='utf-8')
 f.write("personIdentifier," + "pmid," + "identityOrganizationalUnit," + "articleAffiliation," 
         + "organizationalUnitType," + "organizationalUnitMatchingScore," + "organizationalUnitModifier," + "organizationalUnitModifierScore" + "\n")
 
@@ -472,7 +472,7 @@ f.close()
 
 
 #code for personArticleRelationship table
-f = open(outputPath + 'personArticleRelationship.csv','w')
+f = open(outputPath + 'personArticleRelationship.csv','w', encoding='utf-8')
 f.write("personIdentifier," + "pmid," + "relationshipNameArticleFirstName," + "relationshipNameArticleLastName," 
         + "relationshipNameIdentityFirstName," + "relationshipNameIdentityLastName," + "relationshipType," + "relationshipMatchType,"
         + "relationshipMatchingScore," + "relationshipVerboseMatchModifierScore," + "relationshipMatchModifierMentor,"
@@ -513,7 +513,7 @@ f.close()
 
 
 #code for person table
-f = open(outputPath + 'person.csv','w')
+f = open(outputPath + 'person.csv','w', encoding='utf-8')
 f.write("personIdentifier," + "dateAdded," + "dateUpdated," + "precision," + "recall," + "countSuggestedArticles," + "countPendingArticles," + "overallAccuracy," + "mode" + "\n")
 
 count = 0
@@ -550,7 +550,7 @@ for i in range(len(items)):
         count_authors_dict[str(items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['pmid'])] =  len(items[i]['reCiterFeature']['reCiterArticleFeatures'][j]['reCiterArticleAuthorFeatures'])
 print(len(count_authors_dict))
 
-f = open(outputPath + 'personArticleAuthor.csv','w')
+f = open(outputPath + 'personArticleAuthor.csv','w', encoding='utf-8')
 f.write("personIdentifier," + "pmid," + "authorFirstName," + "authorLastName," + "targetAuthor," + "rank," + "orcid" + "\n")
 
 count = 0
@@ -588,7 +588,7 @@ f.close()
 
 #code for personArticleKeyword table
 #open a csv file in the directory you preferred
-f = open(outputPath + 'personArticleKeyword.csv','w')
+f = open(outputPath + 'personArticleKeyword.csv','w', encoding='utf-8')
 #write column names into file
 f.write("personIdentifier," + "pmid," + "keyword" + "\n")
 #use count to record the number of person we have finished feature extraction
@@ -626,7 +626,7 @@ cursor = mydb.cursor()
 cursor.execute('SET autocommit = 0')
 mydb.commit()
 #Import person table
-f = open(outputPath + 'person.csv','r')
+f = open(outputPath + 'person.csv','r', encoding='utf-8')
 csv_data = csv.reader(f)
 cursor.execute("TRUNCATE TABLE person")
 mydb.commit()
@@ -641,7 +641,7 @@ f.close()
 mydb.commit()
 
 #Import personArticleAuthor_s3 table
-f = open(outputPath + 'personArticleAuthor.csv','r')
+f = open(outputPath + 'personArticleAuthor.csv','r', encoding='utf-8')
 csv_data = csv.reader(f)
 cursor.execute("TRUNCATE TABLE personArticleAuthor")
 mydb.commit()
@@ -655,7 +655,7 @@ cursor.executemany("INSERT INTO personArticleAuthor(personIdentifier, pmid, auth
 f.close()
 
 #Import personArticleRelationship_s3 table
-f = open(outputPath + 'personArticleRelationship.csv','r')
+f = open(outputPath + 'personArticleRelationship.csv','r', encoding='utf-8')
 csv_data = csv.reader(f)
 cursor.execute("TRUNCATE TABLE personArticleRelationship")
 mydb.commit()
@@ -670,7 +670,7 @@ f.close()
 
 
 #Import personArticleDepartment_s3 table
-f = open(outputPath + 'personArticleDepartment.csv','r')
+f = open(outputPath + 'personArticleDepartment.csv','r', encoding='utf-8')
 csv_data = csv.reader(f)
 cursor.execute("TRUNCATE TABLE personArticleDepartment")
 mydb.commit()
@@ -684,7 +684,7 @@ cursor.executemany("INSERT INTO personArticleDepartment(personIdentifier, pmid, 
 f.close()
 
 #Import personArticleScopusTargetAuthorAffiliation_s3 table
-f = open(outputPath + 'personArticleScopusTargetAuthorAffiliation.csv','r')
+f = open(outputPath + 'personArticleScopusTargetAuthorAffiliation.csv','r', encoding='utf-8')
 csv_data = csv.reader(f)
 cursor.execute("TRUNCATE TABLE personArticleScopusTargetAuthorAffiliation")
 mydb.commit()
@@ -698,7 +698,7 @@ cursor.executemany("INSERT INTO personArticleScopusTargetAuthorAffiliation(perso
 f.close()
 
 #Import personArticleScopusNonTargetAuthorAffiliation_s3 table
-f = open(outputPath + 'personArticleScopusNonTargetAuthorAffiliation.csv','r')
+f = open(outputPath + 'personArticleScopusNonTargetAuthorAffiliation.csv','r', encoding='utf-8')
 csv_data = csv.reader(f)
 cursor.execute("TRUNCATE TABLE personArticleScopusNonTargetAuthorAffiliation")
 mydb.commit()
@@ -712,7 +712,7 @@ cursor.executemany("INSERT INTO personArticleScopusNonTargetAuthorAffiliation(pe
 f.close()
 
 #Import personArticleGrant_s3 table
-f = open(outputPath + 'personArticleGrant.csv','r')
+f = open(outputPath + 'personArticleGrant.csv','r', encoding='utf-8')
 csv_data = csv.reader(f)
 cursor.execute("TRUNCATE TABLE personArticleGrant")
 mydb.commit()
@@ -726,7 +726,7 @@ cursor.executemany("INSERT INTO personArticleGrant(personIdentifier, pmid, artic
 f.close()
 
 #Import personArticleKeyword table
-f = open(outputPath + 'personArticleKeyword.csv','r')
+f = open(outputPath + 'personArticleKeyword.csv','r', encoding='utf-8')
 csv_data = csv.reader(f)
 cursor.execute("TRUNCATE TABLE personArticleKeyword")
 mydb.commit()
@@ -740,7 +740,7 @@ cursor.executemany("INSERT INTO personArticleKeyword(personIdentifier, pmid, key
 f.close()
 
 #Import personArticle_s3_mysql table
-f = open(outputPath + 'personArticle_mysql.csv','r')
+f = open(outputPath + 'personArticle_mysql.csv','r', encoding='utf-8')
 csv_data = csv.reader(f, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True)
 cursor.execute("TRUNCATE TABLE personArticle")
 mydb.commit()

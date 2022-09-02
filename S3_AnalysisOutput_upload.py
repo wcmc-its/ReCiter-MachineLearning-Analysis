@@ -72,7 +72,7 @@ items = []
 for item in person_list:
     #record time
     start = time.time()
-    for line in open(originalDataPath + '{}'.format(item), 'r'): 
+    for line in open(originalDataPath + '{}'.format(item), 'r', encoding='utf-8'): 
         items.append(json.loads(line))
     print('execution time:', time.time() - start)
 print(len(items))
@@ -82,7 +82,7 @@ print(len(items))
 
 #code for personArticle_s3 table
 #open a csv file
-f = open(outputPath + 'personArticle_s3_mysql.csv','w')
+f = open(outputPath + 'personArticle_s3_mysql.csv','w', encoding='utf-8')
 
 #use count to record the number of person we have finished feature extraction
 count = 0
@@ -354,7 +354,7 @@ f.close()
 
 #### The logic of all parts below is similar to the first part, please refer to the first part for explaination ####
 #code for personArticleGrant_s3 table
-f = open(outputPath + 'personArticleGrant_s3.csv','w')
+f = open(outputPath + 'personArticleGrant_s3.csv','w', encoding='utf-8')
 
 count = 0
 for i in range(len(items)):
@@ -379,7 +379,7 @@ f.close()
 
 
 #code for personArticleScopusNonTargetAuthorAffiliation_s3 table
-f = open(outputPath + 'personArticleScopusNonTargetAuthorAffiliation_s3.csv','w')
+f = open(outputPath + 'personArticleScopusNonTargetAuthorAffiliation_s3.csv','w', encoding='utf-8')
 
 count = 0
 for i in range(len(items)):
@@ -406,7 +406,7 @@ f.close()
 
 
 #code for personArticleScopusTargetAuthorAffiliation_s3 table
-f = open(outputPath + 'personArticleScopusTargetAuthorAffiliation_s3.csv','w')
+f = open(outputPath + 'personArticleScopusTargetAuthorAffiliation_s3.csv','w', encoding='utf-8')
 
 count = 0
 for i in range(len(items)):
@@ -442,7 +442,7 @@ f.close()
 
 
 #code for personArticleDepartment_s3 table 
-f = open(outputPath + 'personArticleDepartment_s3.csv','w')
+f = open(outputPath + 'personArticleDepartment_s3.csv','w', encoding='utf-8')
 
 count = 0
 for i in range(len(items)):
@@ -476,7 +476,7 @@ f.close()
 
 
 #code for personArticleRelationship_s3 table
-f = open(outputPath + 'personArticleRelationship_s3.csv','w')
+f = open(outputPath + 'personArticleRelationship_s3.csv','w', encoding='utf-8')
 
 #capture misspelling key in the content
 misspelling_list = []
@@ -557,7 +557,7 @@ print(misspelling_list)
 
 
 #code for personArticleAuthor_s3 table
-f = open(outputPath + 'personArticleAuthor_s3.csv','w')
+f = open(outputPath + 'personArticleAuthor_s3.csv','w', encoding='utf-8')
 #some article is group authorship, so there is no record for authors in the file, here we use a list to record this
 no_reCiterArticleAuthorFeatures_list =[]
 count = 0
@@ -591,7 +591,7 @@ print(no_reCiterArticleAuthorFeatures_list)
 
 
 #code for person table
-f = open(outputPath + 'person_s3.csv','w')
+f = open(outputPath + 'person_s3.csv','w', encoding='utf-8')
 
 count = 0
 for i in range(len(items)):
@@ -617,7 +617,7 @@ f.close()
 
 #code for personArticleKeyword_s3 table
 #open a csv file
-f = open(outputPath + 'personArticleKeyword_s3.csv','w')
+f = open(outputPath + 'personArticleKeyword_s3.csv','w', encoding='utf-8')
 
 #use count to record the number of person we have finished feature extraction
 count = 0
@@ -654,7 +654,7 @@ cursor.execute('SET autocommit = 0')
 mydb.commit()
 
 #Import person table
-f = open(outputPath + 'person_s3.csv','r')
+f = open(outputPath + 'person_s3.csv','r', encoding='utf-8')
 csv_data = csv.reader(f)
 person = []
 for row in csv_data:
@@ -674,6 +674,7 @@ query = """ UPDATE person
                     firstName = %s,
                     middleName = %s,
                     lastName = %s,
+                    primaryEmail = %s,                    
                     primaryOrganizationalUnit = %s,
                     primaryInstitution = %s
                 WHERE personIdentifier = %s """
@@ -697,6 +698,10 @@ for i in range(len(identities)):
         lastName = identities[i]['identity']['primaryName']['lastName']
     else:
         lastName = ''
+    if 'primaryEmail' in identities[i]['identity']:
+        primaryEmail = identities[i]['identity']['primaryEmail']
+    else:
+        primaryEmail = ''        
     if 'primaryOrganizationalUnit' in identities[i]['identity']:
         primaryOrganizationalUnit = identities[i]['identity']['primaryOrganizationalUnit']
     else:
@@ -715,12 +720,12 @@ for i in range(len(identities)):
     for j in range(len(personType)):
         data = (personIdentifier,personType[j])
         personTypes.append(data)
-    data = (title, firstName, middleName, lastName, primaryOrganizationalUnit, primaryInstitution, personIdentifier)
+    data = (title, firstName, middleName, lastName, primaryEmail, primaryOrganizationalUnit, primaryInstitution, personIdentifier)
     cursor.execute(query, data)
     cursor.executemany('INSERT IGNORE into personPersonType(personIdentifier, personType) VALUES(%s, %s)', personTypes)
 
 #Import personArticleAuthor_s3 table
-f = open(outputPath + 'personArticleAuthor_s3.csv','r')
+f = open(outputPath + 'personArticleAuthor_s3.csv','r', encoding='utf-8')
 csv_data = csv.reader(f)
 personArticleAuthor = []
 for row in csv_data:
@@ -731,7 +736,7 @@ mydb.commit()
 f.close()
 
 #Import personArticleRelationship_s3 table
-f = open(outputPath + 'personArticleRelationship_s3.csv','r')
+f = open(outputPath + 'personArticleRelationship_s3.csv','r', encoding='utf-8')
 csv_data = csv.reader(f)
 personArticleRelationship = []
 for row in csv_data:
@@ -743,7 +748,7 @@ f.close()
 
 
 #Import personArticleDepartment_s3 table
-f = open(outputPath + 'personArticleDepartment_s3.csv','r')
+f = open(outputPath + 'personArticleDepartment_s3.csv','r', encoding='utf-8')
 csv_data = csv.reader(f)
 personArticleDepartment = []
 for row in csv_data:
@@ -754,7 +759,7 @@ mydb.commit()
 f.close()
 
 #Import personArticleScopusTargetAuthorAffiliation_s3 table
-f = open(outputPath + 'personArticleScopusTargetAuthorAffiliation_s3.csv','r')
+f = open(outputPath + 'personArticleScopusTargetAuthorAffiliation_s3.csv','r', encoding='utf-8')
 csv_data = csv.reader(f)
 personArticleScopusTargetAuthorAffiliation = []
 for row in csv_data:
@@ -765,7 +770,7 @@ mydb.commit()
 f.close()
 
 #Import personArticleScopusNonTargetAuthorAffiliation_s3 table
-f = open(outputPath + 'personArticleScopusNonTargetAuthorAffiliation_s3.csv','r')
+f = open(outputPath + 'personArticleScopusNonTargetAuthorAffiliation_s3.csv','r', encoding='utf-8')
 csv_data = csv.reader(f)
 personArticleScopusNonTargetAuthorAffiliation = []
 for row in csv_data:
@@ -776,7 +781,7 @@ mydb.commit()
 f.close()
 
 #Import personArticleGrant_s3 table
-f = open(outputPath + 'personArticleGrant_s3.csv','r')
+f = open(outputPath + 'personArticleGrant_s3.csv','r', encoding='utf-8')
 csv_data = csv.reader(f)
 personArticleGrant = []
 for row in csv_data:
@@ -787,7 +792,7 @@ mydb.commit()
 f.close()
 
 #Import personArticleKeyword table
-f = open(outputPath + 'personArticleKeyword_s3.csv','r')
+f = open(outputPath + 'personArticleKeyword_s3.csv','r', encoding='utf-8')
 csv_data = csv.reader(f)
 personArticleKeyword = []
 for row in csv_data:
@@ -798,7 +803,7 @@ mydb.commit()
 f.close()
 
 #Import personArticle_s3_mysql table
-f = open(outputPath + 'personArticle_s3_mysql.csv','r')
+f = open(outputPath + 'personArticle_s3_mysql.csv','r', encoding='utf-8')
 csv_data = csv.reader(f, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True)
 personArticle = []
 for row in csv_data:
