@@ -10,7 +10,7 @@ phases:
         - echo $TAG
         - sed -i.bak -e 's@CONTAINER_IMAGE@'"$REPOSITORY_URI:$TAG"'@' kubernetes/k8-cronjob.yaml
         - echo "${CODEBUILD_WEBHOOK_HEAD_REF}"
-        - echo "${BRANCH} Dev"
+        - echo "${BRANCH} Dev2"
         - $(aws ecr get-login --no-include-email)
   build:
     commands:
