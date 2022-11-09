@@ -554,7 +554,7 @@ mydb = MySQLdb.connect(host=DB_HOST,
 cursor = mydb.cursor()
 #Import person table
 f = open(outputPath + 'person.csv','r')
-csv_data = csv.reader(f)
+csv_data = csv.reader(f, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True)
 for row in csv_data:
     try:
         cursor.execute("INSERT INTO person(personIdentifier, dateAdded, dateUpdated, `precision`, recall, countSuggestedArticles, overallAccuracy, mode) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)", 
@@ -569,7 +569,7 @@ f.close()
 #Import personArticleAuthor table
 f = open(outputPath + 'personArticleAuthor.csv','r')
 cursor = mydb.cursor()
-csv_data = csv.reader(f)
+csv_data = csv.reader(f, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True)
 for row in csv_data:
     try:
         cursor.execute("INSERT INTO personArticleAuthor(personIdentifier, pmid, authorFirstName, authorLastName, targetAuthor, `rank`) VALUES(%s, %s, %s, %s, %s, %s)", 
@@ -584,7 +584,7 @@ f.close()
 #Import personArticleRelationship table
 f = open(outputPath + 'personArticleRelationship.csv','r')
 cursor = mydb.cursor()
-csv_data = csv.reader(f)
+csv_data = csv.reader(f, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True)
 for row in csv_data:
     try:
         cursor.execute("INSERT INTO personArticleRelationship(personIdentifier, pmid, relationshipNameArticleFirstName, relationshipNameArticleLastName, relationshipNameIdentityFirstName, relationshipNameIdentityLastName, relationshipType, relationshipMatchType, relationshipMatchingScore, relationshipVerboseMatchModifierScore, relationshipMatchModifierMentor, relationshipMatchModifierMentorSeniorAuthor, relationshipMatchModifierManager, relationshipMatchModifierManagerSeniorAuthor) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", 
@@ -599,7 +599,7 @@ f.close()
 #Import personArticleDepartment table
 f = open(outputPath + 'personArticleDepartment.csv','r')
 cursor = mydb.cursor()
-csv_data = csv.reader(f)
+csv_data = csv.reader(f, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True)
 for row in csv_data:
     try:
         cursor.execute("INSERT INTO personArticleDepartment(personIdentifier, pmid, identityOrganizationalUnit, articleAffiliation, organizationalUnitType, organizationalUnitMatchingScore, organizationalUnitModifier, organizationalUnitModifierScore) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)", 
@@ -614,7 +614,7 @@ f.close()
 #Import personArticleScopusTargetAuthorAffiliation table
 f = open(outputPath + 'personArticleScopusTargetAuthorAffiliation.csv','r')
 cursor = mydb.cursor()
-csv_data = csv.reader(f)
+csv_data = csv.reader(f, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True)
 for row in csv_data:
     try:
         cursor.execute("INSERT INTO personArticleScopusTargetAuthorAffiliation(personIdentifier, pmid, targetAuthorInstitutionalAffiliationSource, scopusTargetAuthorInstitutionalAffiliationIdentity, targetAuthorInstitutionalAffiliationArticleScopusLabel, targetAuthorInstitutionalAffiliationArticleScopusAffiliationId, targetAuthorInstitutionalAffiliationMatchType, targetAuthorInstitutionalAffiliationMatchTypeScore) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)", 
@@ -629,7 +629,7 @@ f.close()
 #Import personArticleScopusNonTargetAuthorAffiliation table
 f = open(outputPath + 'personArticleScopusNonTargetAuthorAffiliation.csv','r')
 cursor = mydb.cursor()
-csv_data = csv.reader(f)
+csv_data = csv.reader(f, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True)
 for row in csv_data:
     try:
         cursor.execute("INSERT INTO personArticleScopusNonTargetAuthorAffiliation(personIdentifier, pmid, nonTargetAuthorInstitutionLabel, nonTargetAuthorInstitutionID, nonTargetAuthorInstitutionCount) VALUES(%s, %s, %s, %s, %s)", 
@@ -644,7 +644,7 @@ f.close()
 #Import personArticleGrant table
 f = open(outputPath + 'personArticleGrant.csv','r')
 cursor = mydb.cursor()
-csv_data = csv.reader(f)
+csv_data = csv.reader(f, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True)
 for row in csv_data:
     try:
         cursor.execute("INSERT INTO personArticleGrant(personIdentifier, pmid, articleGrant, grantMatchScore, institutionGrant) VALUES(%s, %s, %s, %s, %s)", 
