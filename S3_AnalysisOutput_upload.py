@@ -57,7 +57,7 @@ originalDataPath = '/usr/src/app/AnalysisOutput/' #need to modify based on your 
 identities = scan_table('Identity')
 print("Count Items from DynamoDB Identity table:", len(identities)) 
 
-downloadDirectoryFroms3(os.getenv('S3_BUCKET_NAME'), 'AnalysisOutput')
+downloadDirectoryFroms3('reciter-dynamodb', 'AnalysisOutput')
 
 person_list = []
 for filename in os.listdir(originalDataPath):
