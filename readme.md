@@ -1,4 +1,4 @@
-ReCiter stores results from its analysis in both DynamoDB (a NoSQL database) and S3 (a file storage system). It also exposes data through its various APIs. Generally speaking, these systems are optimized for performance, so it takes a little extra effort to retrieve data, so it can be analyzed. As you can see, there are numerous ways to get data from your ReCiter instance. 
+ReCiter stores results from its analysis in both DynamoDB (a NoSQL database) and S3 (a file storage system). It also exposes data through its various APIs. Generally speaking, these systems are optimized for performance, so it takes a little extra effort to retrieve data, so it can be analyzed. As you can see, there are numerous ways to get data from your ReCiter instance.  
 
 ## Retrieving CSV data from DynamoDB using Python
 

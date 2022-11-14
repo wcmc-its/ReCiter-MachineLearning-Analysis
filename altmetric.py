@@ -324,7 +324,7 @@ if __name__ == '__main__':
     person_article_cursor = person_article_db.cursor()
 
     # Create a connection to use for inserting records
-    # in the altmetric table. This is the API response
+    # In the altmetric table. This is the API response
     # we need to populate in the altmetric table.
     altmetric_db = connect_mysql_server(DB_USERNAME, DB_PASSWORD, DB_HOST, DB_NAME)
     altmetric_cursor = altmetric_db.cursor()
