@@ -12,7 +12,6 @@ phases:
         - echo "${CODEBUILD_WEBHOOK_HEAD_REF}"
         - echo "${BRANCH}"
         - echo $REPOSITORY_URI
-        - echo $CRON_JOB_NAME
         - $(aws ecr get-login --no-include-email)
   build:
     commands:
