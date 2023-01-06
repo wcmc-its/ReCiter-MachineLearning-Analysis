@@ -52,8 +52,11 @@ def main():
     DB_HOST = os.getenv('DB_HOST')
     DB_NAME = os.getenv('DB_NAME')
 
-    databaseConnection = connect_mysql_server(DB_USERNAME, DB_PASSWORD, DB_HOST, DB_NAME)  
-    run_sql_file("reciterAnalysis.sql", databaseConnection)     
+    databaseConnection = connect_mysql_server(DB_USERNAME, DB_PASSWORD, DB_HOST, DB_NAME) 
+    
+    #run_sql_file("reciterAnalysis.sql", databaseConnection)
+    print(DB_NAME)
+    print(DB_HOST)
     databaseConnection.close() 
      
 if __name__ == "__main__": 
