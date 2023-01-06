@@ -328,8 +328,7 @@ CREATE TABLE IF NOT EXISTS `analysis_rcr_summary` (
   `top5DenominatorFirstSenior` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS `analysis_rcr_year` (
+/*CREATE TABLE IF NOT EXISTS `analysis_rcr_year` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `personIdentifier` varchar(20) DEFAULT NULL,
   `year` int(11) NOT NULL DEFAULT 0,
@@ -338,5 +337,4 @@ CREATE TABLE IF NOT EXISTS `analysis_rcr_year` (
   PRIMARY KEY (`id`),
   KEY `idx_personIdentifier` (`personIdentifier`) USING BTREE,
   KEY `idx_year` (`year`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;*/
